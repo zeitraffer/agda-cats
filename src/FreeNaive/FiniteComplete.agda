@@ -192,6 +192,14 @@ mutual
         ------------------------------
         MorMor f f (IdMor a) (IdMor b)
 
+      -- identity square (helper)
+      IdMorMor' : 
+
+        {a b : Ob cat} -> 
+        (f : a Mor b) -> 
+        ------------------------------
+        MorMor (IdMor a) (IdMor b) f f
+
       -- composition square (helper)
       _MulMorMor_ : 
 
@@ -216,9 +224,9 @@ mutual
         ------------------
         MorMor
           f 
-          IdMor TerminalOb
-          TerminalMor a
-          TerminalMor b 
+          (IdMor TerminalOb)
+          (TerminalMor a)
+          (TerminalMor b) 
 
       -- left projection of product is natural
       ProjectLeftMorNatMorMor : 
@@ -227,9 +235,11 @@ mutual
         (ml : l Mor l') -> 
         (mr : r Mor r') ->
         --------------------------------------------------
-        ((l ProjectLeftMor r) MulMor ml) 
-          Equ
-        ((ml ProductMor mr) MulMor (l' ProjectLeftMor r'))
+        MorMor
+          (ml ProductMor mr)
+          ml
+          (l ProjectLeftMor r) 
+          (l' ProjectLeftMor r')
 
       -- right projection of product is natural
       ProjectRightMorNatMorMor : 
@@ -238,9 +248,11 @@ mutual
         (ml : l Mor l') -> 
         (mr : r Mor r') ->
         ---------------------------------------------------
-        ((l ProjectRightMor r) MulMor mr) 
-          Equ
-        ((ml ProductMor mr) MulMor (l' ProjectRightMor r'))
+        MorMor
+          (ml ProductMor mr)
+          mr
+          (l ProjectRightMor r)
+          (l' ProjectRightMor r')
 
       -- diagonal of product is natural
       DiagonalMorNatMorMor : 
@@ -248,9 +260,11 @@ mutual
         {a b : Ob cat} ->
         (f : a Mor b) ->
         -----------------------------------------
-        ((DiagonalMor a) MulMor (f ProductMor f)) 
-          Equ
-        (f MulMor (DiagonalMor b))
+        MorMor
+          f
+          (f ProductMor f)
+          (DiagonalMor a)
+          (DiagonalMor b)
 
       -- com.square of equalizer count, left
       _EqualizerCounitLeftMorMor_ : 
@@ -276,6 +290,17 @@ mutual
           (f EqualizerCounitSourceMor g) 
           (f EqualizerCounitTargetMor g)
 
+      -- equalizer unit morphism is natural
+      EqualizerUnitNatMorMor : 
+
+        {x y : Ob cat} ->
+        (f : x Mor y) ->
+        ----------------
+        MorMor
+          f
+          (IdMorMor' f EqualizerMor IdMorMor' f)
+          (EqualizerUnitMor x)
+          (EqualizerUnitMor y)
 
   --
   -- `Equ` - equivalences between morphisms (2-morphisms)
