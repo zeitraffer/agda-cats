@@ -295,12 +295,47 @@ mutual
 
         {x y : Ob cat} ->
         (f : x Mor y) ->
-        ----------------
+        -----------------
         MorMor
           f
           (IdMorMor' f EqualizerMor IdMorMor' f)
           (EqualizerUnitMor x)
           (EqualizerUnitMor y)
+
+      -- the counit of equalizer adjunction, source
+      _EqualizerCounitSourceNatMorMor_ : 
+
+        {a a' b b' : Ob cat} ->
+        {f g : a Mor b} -> 
+        {f' g' : a' Mor b'} ->
+        {ma : a Mor a'} -> 
+        {mb : b Mor b'} ->
+        (qf : MorMor f f' ma mb) ->
+        (qg : MorMor g g' ma mb) ->
+        -----------------------
+        MorMor
+          (qf EqualizerMor qg)
+          ma
+          (f EqualizerCounitSourceMor g)
+          (f' EqualizerCounitSourceMor g')
+
+      -- the counit of equalizer adjunction, target
+      _EqualizerCounitTargetNatMorMor_ : 
+
+        {a a' b b' : Ob cat} ->
+        {f g : a Mor b} -> 
+        {f' g' : a' Mor b'} ->
+        {ma : a Mor a'} -> 
+        {mb : b Mor b'} ->
+        (qf : MorMor f f' ma mb) ->
+        (qg : MorMor g g' ma mb) ->
+        -----------------------
+        MorMor
+          (qf EqualizerMor qg)
+          mb
+          (f EqualizerCounitTargetMor g)
+          (f' EqualizerCounitTargetMor g')
+
 
   --
   -- `Equ` - equivalences between morphisms (2-morphisms)
@@ -503,18 +538,18 @@ mutual
       -- equalizer is functorial on composition
       EqualizerMulEqu : 
 
-          {a a' a'' b b' b'' : Ob cat} ->
-          {f g : a Mor b} -> 
-          {f' g' : a' Mor b'} -> 
-          {f'' g'' : a'' Mor b''} ->
-          {ma : a Mor a'} -> 
-          {mb : b Mor b'} ->
-          {ma' : a' Mor a''} -> 
-          {mb' : b' Mor b''} ->
-          (ef : MorMor f f' ma mb) ->
-          (eg : MorMor g g' ma mb) ->
-          (ef' : MorMor f' f'' ma' mb') ->
-          (eg' : MorMor g' g'' ma' mb') ->
+        {a a' a'' b b' b'' : Ob cat} ->
+        {f g : a Mor b} -> 
+        {f' g' : a' Mor b'} -> 
+        {f'' g'' : a'' Mor b''} ->
+        {ma : a Mor a'} -> 
+        {mb : b Mor b'} ->
+        {ma' : a' Mor a''} -> 
+        {mb' : b' Mor b''} ->
+        (ef : MorMor f f' ma mb) ->
+        (eg : MorMor g g' ma mb) ->
+        (ef' : MorMor f' f'' ma' mb') ->
+        (eg' : MorMor g' g'' ma' mb') ->
         ----------------------------------------------------
         ((ef EqualizerMor eg) MulMor (ef' EqualizerMor eg'))
           Equ
