@@ -1,59 +1,127 @@
-module FiniteComplete where
+module FreeSmart.FiniteComplete where
 
-open import CatDefs
+open import Structs.CatDefs
+
+      ----------------------------------
+      -- here is our list of structure markers 
+      -- (all constructors below are classified by these markers)
+      ----
+      -- : global monad structure :
+      -- : terminal object structure :
+      -- : cartesian product structure :
+      -- : category of pairs structure :
 
 mutual
 
+  -------------------------------------------------------------------------
+  --                                                                     --
+  -- the free FC category comprises of `Ob`, `Mor`, `Equ`                --
+  --                                                                     --
+  -------------------------------------------------------------------------
+
   --
-  -- `Ob cat` - objects of the category
+  -- `Ob cat` - objects of the free FC category
   --
-  data Ob (cat : CatRec) : Set 
+  data Ob {level : Level} (cat : CatRec level) 
+      : Set level
     where
 
-      -- preexistent objects
+      ------------------------------
+      -- : global monad structure :
+      --
+
+      -- global monad unit, object layer
       PureOb : 
-          CatOb cat -> 
+
+        CatOb cat -> 
+        ------------
+        Ob cat        
+
+      -- product functor, object layer
+      ProductOb : 
+
+        {len : MyNat} ->
+        SeqOb cat len ->
+        ----------------
         Ob cat
 
-      -- terminal object
+{-
+      ---------------------------------
+      -- : terminal object structure :
+      --
+
+      -- the terminal object
       TerminalOb : 
+
+        ------
         Ob cat
 
-      -- cartesian product of objects
+      -----------------------------------
+      -- : cartesian product structure :
+      --
+
+      -- the cartesian product of objects
       _ProductOb_ : 
-          (l r : Ob cat) ->
+
+        (l r : Ob cat) ->
+        -----------------
         Ob cat
 
-      -- equalizer object
+      ---------------------------
+      -- : equalizer structure :
+      --
+
+      -- the equalizer object
       _EqualizerOb_ : 
-          {a b : Ob cat} ->
-          (f g : a Mor b) ->
-        Ob cat
 
+        {a b : Ob cat} ->
+        (f g : a Mor b) ->
+        ------------------
+        Ob cat
+-}  
+  -- end data Ob
 
   --
   -- `Mor` - morphisms between objects
   --
-  data _Mor_ {cat : CatRec} : (a b : Ob cat) -> Set 
+  data _Mor_ {level : Level} {cat : CatRec level} : 
+      (a b : Ob cat) -> Set level
     where
 
       -- preexistent morphisms
       PureMor : 
-          {a b : CatOb cat} ->
-          a CatMor b -> 
+
+        {a b : CatOb cat} ->
+        a CatMor b -> 
+        -------------------------
         (PureOb a) Mor (PureOb b)
 
       -- identity morphism
       IdMor : 
-          (o : Ob cat) ->
+
+        (o : Ob cat) ->
+        ---------------
         (o Mor o)
 
       -- composition of morphisms
       _MulMor_ : 
-          {a b c : Ob cat} ->
-          (a Mor b) -> (b Mor c) ->
+
+        {a b c : Ob cat} ->
+        (a Mor b) -> 
+        (b Mor c) ->
+        -------------------------
         (a Mor c)
-        
+
+      -- product functor, morphism layer
+      ProductMor : 
+
+        {len : MyNat} ->
+        {as bs : SeqOb cat len} ->
+        as SeqMor bs ->
+        ---------------------------------
+        (ProductOb as) Mor (ProductOb bs)
+
+  {-
       -- morphism to terminal object
       TerminalMor : 
           (o : Ob cat) ->
@@ -88,16 +156,17 @@ mutual
           MorMor f f' ma mb ->
           MorMor g g' ma mb ->
         (f EqualizerOb g) Mor (f' EqualizerOb g')
-
+-}      
+  -- end data Mor
 
   --
   -- morphisms in the category of morphisms
   --  
-  data MorMor {cat : CatRec} : 
+  data MorMor {level : Level} {cat : CatRec level} : 
         {a a' b b' : Ob cat} -> 
         (f : a Mor b) -> (f' : a' Mor b') ->
         (ma : a Mor a') -> (mb : b Mor b') ->
-      Set
+      Set level
     where
 
       -- commutative square
@@ -124,11 +193,13 @@ mutual
           (sq' : MorMor f' f'' ma' mb') ->
         MorMor f f'' (ma MulMor ma') (mb MulMor mb')
 
+  -- end data MorMor
 
   --
   -- `Equ` - equivalences between morphisms (2-morphisms)
   --
-  data _Equ_ {cat : CatRec} : {a b : Ob cat} -> (f g : a Mor b) -> Set 
+  data _Equ_ {level : Level} {cat : CatRec level} : 
+      {a b : Ob cat} -> (f g : a Mor b) -> Set level
     where
 
       -- preexistent equivalences
@@ -194,6 +265,10 @@ mutual
           (f : a Mor b) -> (g : b Mor c) -> (h : c Mor d) ->
         ((f MulMor g) MulMor h) Equ (f MulMor (g MulMor h))
 
+      -- product functor, equality layer
+
+
+{-
       -- terminal morphism is natural
       TerminalMorNatEqu : 
           {a b : Ob cat} ->
@@ -308,16 +383,144 @@ mutual
         ((ef EqualizerMor eg) MulMor (ef' EqualizerMor eg'))
           Equ
         ((ef MulMorMor ef') EqualizerMor (eg MulMorMor eg'))
+-}
+  -- end data Equ
 
---
+  -------------------------------------------------------------------
+  --                                                               --
+  -- the tuple categories comprises of `SeqOb`, `SeqMor`, `SeqEqu` --
+  --                                                               --
+  -------------------------------------------------------------------
+
+  --
+  -- the sequence category (C^n), object layer
+  --
+  data SeqOb {level : Level} (cat : CatRec level) 
+      : MyNat -> Set level
+    where
+
+      -- the empty list of objects
+      MkNilOb : 
+
+        ---------------------
+        SeqOb cat MkZero
+
+      -- a non-empty list of objects
+      _MkConsOb_ : 
+
+        {len : MyNat} ->
+        Ob cat ->
+        SeqOb cat len ->
+        -------------------------
+        SeqOb cat (MkSucc len)
+
+  -- end data SeqOb
+
+  --
+  -- the sequence category (C^n), morphism layer
+  --
+  data _SeqMor_ {level : Level} {cat : CatRec level} 
+      : {len : MyNat} -> (a b : SeqOb cat len) -> Set level
+    where
+
+      -- the empty list of morphisms
+      MkNilMor : 
+
+        ----------------------
+        MkNilOb SeqMor MkNilOb
+
+      -- a non-empty list of morphisms
+      _MkConsMor_ : 
+
+        {len : MyNat} ->
+        {a b : Ob cat} ->
+        {as bs : SeqOb cat len} ->
+        a Mor b ->
+        as SeqMor bs ->
+        --------------------------------------
+        (a MkConsOb as) SeqMor (b MkConsOb bs)
+
+  -- end data _SeqMor_
+
+  --
+  -- the sequence category (C^n), equality layer
+  --
+  data _SeqEqu_ {level : Level} {cat : CatRec level} 
+      : {len : MyNat} -> {a b : SeqOb cat len} -> (f g : a SeqMor b) -> Set level
+    where
+
+      -- the empty list of morphisms
+      MkNilEqu : 
+
+        ------------------------
+        MkNilMor SeqEqu MkNilMor
+
+      -- a non-empty list of morphisms
+      _MkConsEqu_ : 
+
+        {len : MyNat} ->
+        {a b : Ob cat} ->
+        {as bs : SeqOb cat len} ->
+        {f g : a Mor b} ->
+        {fs gs : as SeqMor bs} ->
+        f Equ g ->
+        fs SeqEqu gs ->
+        ----------------------------------------
+        (f MkConsMor fs) SeqEqu (g MkConsMor gs)
+
+  -- end data _SeqMor_
+
+  -- diagonal functor, object layer
+  DiagonalOb : 
+
+    {level : Level} ->
+    {cat : CatRec level} -> 
+    (len : MyNat) ->
+    Ob cat ->
+    -------------
+    SeqOb cat len
+
+  DiagonalOb MkZero _ = MkNilOb
+  DiagonalOb (MkSucc len) a = a MkConsOb (DiagonalOb len a)
+
+  -- diagonal functor, morphism layer
+  DiagonalMor : 
+
+    {level : Level} ->
+    {cat : CatRec level} -> 
+    {a b : Ob cat} ->
+    (len : MyNat) ->
+    a Mor b ->
+    --------------------------------------------
+    (DiagonalOb len a) SeqMor (DiagonalOb len b)
+
+  DiagonalMor MkZero _ = MkNilMor
+  DiagonalMor (MkSucc len) f = f MkConsMor (DiagonalMor len f)
+
+  -- diagonal functor, equality layer
+  DiagonalEqu : 
+
+    {level : Level} ->
+    {cat : CatRec level} -> 
+    {a b : Ob cat} ->
+    {f g : a Mor b} ->
+    (len : MyNat) ->
+    f Equ g ->
+    --------------------------------------------
+    (DiagonalMor len f) SeqEqu (DiagonalMor len g)
+
+  DiagonalEqu MkZero _ = MkNilEqu
+  DiagonalEqu (MkSucc len) e = e MkConsEqu (DiagonalEqu len e)
+
+-------------------------------------------------------------------------------
 -- pack it all into a CatRec
 --
-FreeFCCat : CatRec -> CatRec
+FreeFCCat : {level : Level} -> CatRec level -> CatRec level
 FreeFCCat cat = record {
-    fOb = Ob cat;
-    fMor = _Mor_;
-    fEqu = \_ _ -> _Equ_;
-    fId = IdMor;
-    fMul = \_ _ _ -> _MulMor_
+    cOb = Ob cat;
+    cMor = _Mor_;
+    cEqu = \_ _ -> _Equ_;
+    cId = IdMor;
+    cMul = \_ _ _ -> _MulMor_
   }
 
