@@ -11,7 +11,7 @@ mutual
 
       {level : Level} 
       (cat : CatRec level) : 
-      ------------------------------------
+      ----------------------
       Set level
 
     where
@@ -127,8 +127,8 @@ mutual
         {f' g' : a' Mor b'} ->
         {ma : a Mor a'} -> 
         {mb : b Mor b'} ->
-        MorMor f f' ma mb ->
-        MorMor g g' ma mb ->
+        Square f f' ma mb ->
+        Square g g' ma mb ->
         -----------------------------------------
         (f EqualizerOb g) Mor (f' EqualizerOb g')
 
@@ -155,10 +155,11 @@ mutual
         -----------------------
         (f EqualizerOb g) Mor b
 
+
   --
   -- morphisms in the category of morphisms
   --  
-  data MorMor 
+  data Square 
 
       {level : Level} 
       {cat : CatRec level} : 
@@ -173,35 +174,35 @@ mutual
     where
 
       -- commutative square
-      SquareMorMor : 
+      EquSquare : 
 
         {a a' b b' : Ob cat} -> 
         {f : a Mor b} -> 
         {f' : a' Mor b'} ->
         {ma : a Mor a'} -> 
         {mb : b Mor b'} ->
-        (ma MulMor f') Equ (f MulMor mb) ->
+        (f MulMor mb) Equ (ma MulMor f') ->
         -----------------------------------
-        MorMor f f' ma mb
+        Square f f' ma mb
 
       -- identity square (helper)
-      IdMorMor : 
+      IdSquare : 
 
         {a b : Ob cat} -> 
         (f : a Mor b) -> 
         ------------------------------
-        MorMor f f (IdMor a) (IdMor b)
+        Square f f (IdMor a) (IdMor b)
 
       -- identity square (helper)
-      IdMorMor' : 
+      IdSquare' : 
 
         {a b : Ob cat} -> 
         (f : a Mor b) -> 
         ------------------------------
-        MorMor (IdMor a) (IdMor b) f f
+        Square (IdMor a) (IdMor b) f f
 
       -- composition square (helper)
-      _MulMorMor_ : 
+      _MulSquare_ : 
 
         {a a' a'' b b' b'' : Ob cat} ->
         {f : a Mor b} -> 
@@ -211,126 +212,126 @@ mutual
         {mb : b Mor b'} ->
         {ma' : a' Mor a''} -> 
         {mb' : b' Mor b''} ->
-        (sq : MorMor f f' ma mb) ->
-        (sq' : MorMor f' f'' ma' mb') ->
+        (sq : Square f f' ma mb) ->
+        (sq' : Square f' f'' ma' mb') ->
         --------------------------------------------
-        MorMor f f'' (ma MulMor ma') (mb MulMor mb')
+        Square f f'' (ma MulMor ma') (mb MulMor mb')
 
       -- terminal morphism is natural
-      TerminalMorNatMorMor : 
+      TerminalMorNatSquare : 
 
         {a b : Ob cat} ->
         (f : a Mor b) ->
         ------------------
-        MorMor
+        Square
           f 
           (IdMor TerminalOb)
           (TerminalMor a)
           (TerminalMor b) 
 
       -- left projection of product is natural
-      ProjectLeftMorNatMorMor : 
+      ProjectLeftMorNatSquare : 
 
         {l r l' r' : Ob cat} -> 
         (ml : l Mor l') -> 
         (mr : r Mor r') ->
         --------------------------------------------------
-        MorMor
+        Square
           (ml ProductMor mr)
           ml
           (l ProjectLeftMor r) 
           (l' ProjectLeftMor r')
 
       -- right projection of product is natural
-      ProjectRightMorNatMorMor : 
+      ProjectRightMorNatSquare : 
 
         {l r l' r' : Ob cat} -> 
         (ml : l Mor l') -> 
         (mr : r Mor r') ->
         ---------------------------------------------------
-        MorMor
+        Square
           (ml ProductMor mr)
           mr
           (l ProjectRightMor r)
           (l' ProjectRightMor r')
 
       -- diagonal of product is natural
-      DiagonalMorNatMorMor : 
+      DiagonalMorNatSquare : 
 
         {a b : Ob cat} ->
         (f : a Mor b) ->
         -----------------------------------------
-        MorMor
+        Square
           f
           (f ProductMor f)
           (DiagonalMor a)
           (DiagonalMor b)
 
       -- com.square of equalizer count, left
-      _EqualizerCounitLeftMorMor_ : 
+      _EqualizerCounitLeftSquare_ : 
 
         {a b : Ob cat} ->
         (f g : a Mor b) ->
         ------------------
-        MorMor 
+        Square 
           (IdMor (f EqualizerOb g)) 
           f 
           (f EqualizerCounitSourceMor g) 
           (f EqualizerCounitTargetMor g)
 
       -- com.square of equalizer count, right
-      _EqualizerCounitRightMorMor_ : 
+      _EqualizerCounitRightSquare_ : 
 
         {a b : Ob cat} ->
         (f g : a Mor b) ->
         ------------------
-        MorMor 
+        Square 
           (IdMor (f EqualizerOb g)) 
           g 
           (f EqualizerCounitSourceMor g) 
           (f EqualizerCounitTargetMor g)
 
       -- equalizer unit morphism is natural
-      EqualizerUnitNatMorMor : 
+      EqualizerUnitNatSquare : 
 
         {x y : Ob cat} ->
         (f : x Mor y) ->
         -----------------
-        MorMor
+        Square
           f
-          (IdMorMor' f EqualizerMor IdMorMor' f)
+          (IdSquare' f EqualizerMor IdSquare' f)
           (EqualizerUnitMor x)
           (EqualizerUnitMor y)
 
       -- the counit of equalizer adjunction, source
-      _EqualizerCounitSourceNatMorMor_ : 
+      _EqualizerCounitSourceNatSquare_ : 
 
         {a a' b b' : Ob cat} ->
         {f g : a Mor b} -> 
         {f' g' : a' Mor b'} ->
         {ma : a Mor a'} -> 
         {mb : b Mor b'} ->
-        (qf : MorMor f f' ma mb) ->
-        (qg : MorMor g g' ma mb) ->
+        (qf : Square f f' ma mb) ->
+        (qg : Square g g' ma mb) ->
         -----------------------
-        MorMor
+        Square
           (qf EqualizerMor qg)
           ma
           (f EqualizerCounitSourceMor g)
           (f' EqualizerCounitSourceMor g')
 
       -- the counit of equalizer adjunction, target
-      _EqualizerCounitTargetNatMorMor_ : 
+      _EqualizerCounitTargetNatSquare_ : 
 
         {a a' b b' : Ob cat} ->
         {f g : a Mor b} -> 
         {f' g' : a' Mor b'} ->
         {ma : a Mor a'} -> 
         {mb : b Mor b'} ->
-        (qf : MorMor f f' ma mb) ->
-        (qg : MorMor g g' ma mb) ->
+        (qf : Square f f' ma mb) ->
+        (qg : Square g g' ma mb) ->
         -----------------------
-        MorMor
+        Square
           (qf EqualizerMor qg)
           mb
           (f EqualizerCounitTargetMor g)
@@ -440,6 +441,17 @@ mutual
         ---------------------------------------------------
         ((f MulMor g) MulMor h) Equ (f MulMor (g MulMor h))
 
+      SquareEqu : 
+
+        {a a' b b' : Ob cat} -> 
+        {f : a Mor b} -> 
+        {f' : a' Mor b'} -> 
+        {ma : a Mor a'} -> 
+        {mb : b Mor b'} -> 
+        Square f f' ma mb -> 
+        --------------------------------
+        (f MulMor mb) Equ (ma MulMor f')
+
       -- terminal morphism is unique (triangle equality of adjunction)
       TerminalTriangleEqu : 
 
@@ -516,10 +528,10 @@ mutual
         {f' g' : a' Mor b'} ->
         {ma ma' : a Mor a'} -> 
         {mb mb' : b Mor b'} ->
-        {ef : MorMor f f' ma mb} ->
-        {ef' : MorMor f f' ma' mb'} ->
-        {eg : MorMor g g' ma mb} ->
-        {eg' : MorMor g g' ma' mb'} ->
+        {ef : Square f f' ma mb} ->
+        {ef' : Square f f' ma' mb'} ->
+        {eg : Square g g' ma mb} ->
+        {eg' : Square g g' ma' mb'} ->
         (ea : ma Equ ma') -> 
         (eb : mb Equ mb') -> 
         -----------------------------------------------
@@ -531,7 +543,7 @@ mutual
         {a b : Ob cat} ->
         (f g : a Mor b) -> 
         --------------------------------------
-        (IdMorMor f EqualizerMor IdMorMor g) 
+        (IdSquare f EqualizerMor IdSquare g) 
           Equ 
         IdMor (f EqualizerOb g)
 
@@ -546,14 +558,36 @@ mutual
         {mb : b Mor b'} ->
         {ma' : a' Mor a''} -> 
         {mb' : b' Mor b''} ->
-        (ef : MorMor f f' ma mb) ->
-        (eg : MorMor g g' ma mb) ->
-        (ef' : MorMor f' f'' ma' mb') ->
-        (eg' : MorMor g' g'' ma' mb') ->
+        (ef : Square f f' ma mb) ->
+        (eg : Square g g' ma mb) ->
+        (ef' : Square f' f'' ma' mb') ->
+        (eg' : Square g' g'' ma' mb') ->
         ----------------------------------------------------
         ((ef EqualizerMor eg) MulMor (ef' EqualizerMor eg'))
           Equ
-        ((ef MulMorMor ef') EqualizerMor (eg MulMorMor eg'))
+        ((ef MulSquare ef') EqualizerMor (eg MulSquare eg'))
+
+      -- equalizer, 1st triangle
+      EqualizerTriangle1Equ : 
+
+        (x : Ob cat) ->
+        --------------------------------------------------------------------
+        (EqualizerUnitMor x MulMor (IdMor x EqualizerCounitSourceMor IdMor x))
+          Equ
+        IdMor x
+
+      -- equalizer, 1st triangle
+      EqualizerTriangle2Equ : 
+
+        {a b : Ob cat} ->
+        (f g : a Mor b) ->
+        ----------------------------------
+        (EqualizerUnitMor (f EqualizerOb g) 
+          MulMor 
+        ((f EqualizerCounitLeftSquare g) EqualizerMor (f EqualizerCounitRightSquare g)))
+          Equ
+        IdMor (f EqualizerOb g)
+
 
 --
 -- pack it all into a CatRec
