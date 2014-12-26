@@ -2,10 +2,6 @@ module Structs.CatDefs where
 
 open import Agda.Primitive public
 
-data MyNat : Set where
-  MkZero : MyNat
-  MkSucc : MyNat -> MyNat
-
 record CatRec (l : Level) : Set (lsuc l) 
   where
     constructor MkCat
