@@ -2,6 +2,10 @@ module InitSmart.MonoidModule where
 
 mutual
 
+  infix 1 _⇒_ _≡_
+  infixl 10 _MulMor_ _MulEqu_ _MulMorEqu_ 
+  infixl 5 _MulOb_ _MulObMor_ _MulObEqu_ _MulObIdEqu_ 
+
   -- 'types'
   data Tag : Set where
     Ob : Tag
@@ -67,7 +71,7 @@ mutual
       « f ≡ f' » → 
       « g ≡ g' » → 
       -------------------------------------------
-      « (f MulMor g) ≡ (f' MulMor g') »
+      « f MulMor g ≡ f' MulMor g' »
 
     --≡≡≡≡≡≡≡≡≡≡≡≡=
     -- system : monoidal category structure
@@ -93,7 +97,7 @@ mutual
       « l ⇒ l' » → 
       « r ⇒ r' » → 
       ---------------------------------------
-      « (l MulOb r) ⇒ (l' MulOb r') »
+      « l MulOb r ⇒ l' MulOb r' »
 
     -- monoidal operation in category, action on equalities
     _MulObEqu_ : 
@@ -104,14 +108,14 @@ mutual
       « fl ≡ fl' » → 
       « fr ≡ fr' » → 
       ------------------------------------------------------
-      « (fl MulObMor fr) ≡ (fl' MulObMor fr') »
+      « fl MulObMor fr ≡ fl' MulObMor fr' »
 
     -- monoidal operation in category, functoriality at identity
     _MulObIdEqu_ : 
 
       (l r : « Ob ») →
       ------------------
-      « (IdMor MulObMor IdMor) ≡ IdMor {l MulOb r} »
+      « IdMor MulObMor IdMor ≡ IdMor {l MulOb r} »
 
     -- monoidal operation in category, functoriality at composition
     MulObMulEqu : 
@@ -120,29 +124,29 @@ mutual
       (f : « l ⇒ l' ») → (f' : « l' ⇒ l'' ») →
       (g : « r ⇒ r' ») → (g' : « r' ⇒ r'' ») →
       -----------------------------------------
-      « ((f MulMor f') MulObMor (g MulMor g')) ≡ 
-        ((f MulObMor g) MulMor (f' MulObMor g')) »
+      « (f MulMor f') MulObMor (g MulMor g') ≡ 
+        (f MulObMor g) MulMor (f' MulObMor g') »
 
     -- left neutrality of identity object transformation, top-down direction
     NeutrLeftDownMor : 
 
       {x : « Ob »} → 
       ------------------------------
-      « (IdOb MulOb x) ⇒ x »
+      « IdOb MulOb x ⇒ x »
 
     -- left neutrality of identity object transformation, bottom-up direction
     NeutrLeftUpMor : 
 
       {x : « Ob »} → 
       ------------------------------
-      « x ⇒ (IdOb MulOb x) »      
+      « x ⇒ IdOb MulOb x »      
 
     -- isomorphism
     NeutrLeftDownUpIsoEqu : 
 
       {x : « Ob »} → 
       ------------------------------
-      «(NeutrLeftDownMor MulMor NeutrLeftUpMor) ≡ 
+      « NeutrLeftDownMor MulMor NeutrLeftUpMor ≡ 
         IdMor {IdOb MulOb x}»
 
     -- isomorphism
@@ -150,7 +154,7 @@ mutual
 
       {x : « Ob »} → 
       ------------------------------
-      «(NeutrLeftUpMor MulMor NeutrLeftDownMor) ≡ 
+      « NeutrLeftUpMor MulMor NeutrLeftDownMor ≡ 
         IdMor {x} »
 
     -- naturality of `NeutrLeftDownMor`
@@ -159,8 +163,8 @@ mutual
       {x y : « Ob »} → 
       (f : « x ⇒ y ») → 
       --------------------
-      « (NeutrLeftDownMor MulMor f) ≡ 
-        ((IdMor MulObMor f) MulMor NeutrLeftDownMor) »
+      « NeutrLeftDownMor MulMor f ≡ 
+        (IdMor MulObMor f) MulMor NeutrLeftDownMor »
 
     -- naturality of `NeutrLeftUpMor`
     NeutrLeftUpMorNatEqu : 
@@ -168,29 +172,29 @@ mutual
       {x y : « Ob »} → 
       (f : « x ⇒ y ») → 
       --------------------
-      « (NeutrLeftUpMor MulMor (IdMor MulObMor f)) ≡ 
-        (f MulMor NeutrLeftUpMor) »
+      « NeutrLeftUpMor MulMor (IdMor MulObMor f) ≡ 
+        f MulMor NeutrLeftUpMor »
 
     -- left neutrality of identity object transformation, top-down direction
     NeutrRightDownMor : 
 
       {x : « Ob »} → 
       ------------------------------
-      « (x MulOb IdOb) ⇒ x »
+      « x MulOb IdOb ⇒ x »
 
     -- left neutrality of identity object transformation, bottom-up direction
     NeutrRightUpMor : 
 
       {x : « Ob »} → 
       ------------------------------
-      « x ⇒ (x MulOb IdOb) »      
+      « x ⇒ x MulOb IdOb »      
 
     -- isomorphism
     NeutrRightDownUpIsoEqu : 
 
       {x : « Ob »} → 
       ------------------------------
-      «(NeutrRightDownMor MulMor NeutrRightUpMor) ≡ 
+      « NeutrRightDownMor MulMor NeutrRightUpMor ≡ 
         IdMor {x MulOb IdOb}»
 
     -- isomorphism
@@ -198,7 +202,7 @@ mutual
 
       {x : « Ob »} → 
       ------------------------------
-      «(NeutrRightUpMor MulMor NeutrRightDownMor) ≡ 
+      « NeutrRightUpMor MulMor NeutrRightDownMor ≡ 
         IdMor {x} »
 
     -- naturality of `NeutrRightDownMor`
@@ -207,8 +211,8 @@ mutual
       {x y : « Ob »} → 
       (f : « x ⇒ y ») → 
       --------------------
-      « (NeutrRightDownMor MulMor f) ≡ 
-        ((f MulObMor IdMor) MulMor NeutrRightDownMor) »
+      « NeutrRightDownMor MulMor f ≡ 
+        (f MulObMor IdMor) MulMor NeutrRightDownMor »
 
     -- naturality of `NeutrRightUpMor`
     NeutrRightUpMorNatEqu : 
@@ -216,29 +220,29 @@ mutual
       {x y : « Ob »} → 
       (f : « x ⇒ y ») → 
       --------------------
-      « (NeutrRightUpMor MulMor (f MulObMor IdMor)) ≡ 
-        (f MulMor NeutrRightUpMor) »
+      « NeutrRightUpMor MulMor (f MulObMor IdMor) ≡ 
+        f MulMor NeutrRightUpMor »
 
     -- associativity transformation, left-to-right
     AssocLRMor : 
 
       {x y z : « Ob »} →
       ---------------------
-      «((x MulOb y) MulOb z) ⇒ (x MulOb (y MulOb z))»
+      « (x MulOb y) MulOb z ⇒ x MulOb (y MulOb z) »
 
     -- associativity transformation, right-to-left
     AssocRLMor : 
 
       {x y z : « Ob »} →
       ---------------------
-      «(x MulOb (y MulOb z)) ⇒ ((x MulOb y) MulOb z)»
+      « x MulOb (y MulOb z) ⇒ (x MulOb y) MulOb z »
 
     -- associativity transformation, left isomorphism equation
     AssocLeftIsoEqu : 
 
       {x y z : « Ob »} →
       ---------------------
-      « (AssocLRMor MulMor AssocRLMor) ≡
+      « AssocLRMor MulMor AssocRLMor ≡
         IdMor {(x MulOb y) MulOb z} »
 
     -- associativity transformation, right isomorphism equation
@@ -246,7 +250,7 @@ mutual
 
       {x y z : « Ob »} →
       ---------------------
-      « (AssocRLMor MulMor AssocLRMor) ≡
+      « AssocRLMor MulMor AssocLRMor ≡
         IdMor {x MulOb (y MulOb z)} »
 
     -- associativity transformation, left-to-right, naturality of
@@ -257,8 +261,8 @@ mutual
       (g : « y ⇒ y' ») → 
       (h : « z ⇒ z' ») → 
       --------------------------
-      « (AssocLRMor MulMor (f MulObMor (g MulObMor h))) ≡
-        (((f MulObMor g) MulObMor h) MulMor AssocLRMor) »
+      « AssocLRMor MulMor (f MulObMor (g MulObMor h)) ≡
+        ((f MulObMor g) MulObMor h) MulMor AssocLRMor »
 
     -- associativity transformation, right-to-left, naturality of
     AssocRLMorNatEqu : 
@@ -268,8 +272,8 @@ mutual
       (g : « y ⇒ y' ») → 
       (h : « z ⇒ z' ») → 
       --------------------------
-      « (AssocRLMor MulMor ((f MulObMor g) MulObMor h)) ≡
-        ((f MulObMor (g MulObMor h)) MulMor AssocRLMor) »
+      « AssocRLMor MulMor ((f MulObMor g) MulObMor h) ≡
+        (f MulObMor (g MulObMor h)) MulMor AssocRLMor »
 
     --====================
     -- applied : monoid structure
@@ -285,20 +289,20 @@ mutual
 
     -- the binary operation of the monoid
     MulEl : 
-      « (El MulOb El) ⇒ El »
+      « El MulOb El ⇒ El »
 
     -- left neutrality
     NeutralityLeftEqu : 
-      « ((IdEl MulObMor (IdMor)) MulMor MulEl) ≡ 
+      « (IdEl MulObMor (IdMor)) MulMor MulEl ≡ 
         NeutrLeftDownMor »
 
     -- right neutrality
     NeutralityRightEqu : 
-      « (((IdMor) MulObMor IdEl) MulMor MulEl) ≡ 
+      « ((IdMor) MulObMor IdEl) MulMor MulEl ≡ 
         NeutrRightDownMor »
 
     -- associativity
     AssociativityEqu : 
-      « ((MulEl MulObMor IdMor) MulMor MulEl) ≡ 
-        (AssocLRMor MulMor ((IdMor MulObMor MulEl) MulMor MulEl)) »
+      « (MulEl MulObMor IdMor) MulMor MulEl ≡ 
+        AssocLRMor MulMor ((IdMor MulObMor MulEl) MulMor MulEl) »
 
