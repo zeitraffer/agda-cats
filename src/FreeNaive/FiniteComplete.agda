@@ -31,7 +31,7 @@ mutual
         {sourceOb targetOb : / Ob {cat = cat}/} -> 
         (sourceMor targetMor : / sourceOb Mor targetOb /) ->
         Tag cat
-
+{-
       -- XXX to remove
       Square : 
         {a a' b b' : / Ob {cat = cat}/} -> 
@@ -40,6 +40,7 @@ mutual
         (ma : / a Mor a' /) -> 
         (mb : / b Mor b' /) ->
         Tag cat
+-}
 
   --
   -- terms of internal types

@@ -1,33 +1,21 @@
 module FreeSmart.FiniteComplete where
 
-open import Structs.LayerDef
-open import Structs.CatDefs
-
 mutual
 
   private syntax Term tag = / tag /
-
-  infixr 2 _:>_
-  infixl 4 _##_
-  infix  6 _~>_
-  infixl 7 _,_
-  infixl 8 _0$_ 
 
   --
   -- internal types of terms
   --
   data Tag 
-      {level : Level} 
-      (cat : CatRec level) :
-      (layer : Layer) ->
-      Set level
+      Set
     where
 
       -- objects
       Ob : 
 
         ----------
-        Tag cat L2
+        Tag
 
       -- morphisms between terms
       _~>_ : 
