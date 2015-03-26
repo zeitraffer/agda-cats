@@ -1,32 +1,6 @@
 module Structs.RelModule where
 
-open import Agda.Primitive public
-
-ZeroLev : Level
-ZeroLev = lzero
-
-SuccLev : Level → Level
-SuccLev = lsuc
-
-Type : (ℓ : Level) → Set (SuccLev ℓ)
-Type ℓ = Set ℓ
-
-record LiftType 
-    {ℓ : Level} 
-    (ℓ⁺ : Level) 
-    (T : Type ℓ) : 
-    Type (ℓ ⊔ ℓ⁺)
-  where
-    constructor MkLiftType
-    field 
-      unLift : T
-open LiftType public
-
-data NaturalType : 
-    Type ZeroLev
-  where
-    ZeroNat : NaturalType
-    SuccNat : NaturalType → NaturalType
+open import Structs.NaturalModule public
 
 record RelationLevel
     {ℓ² : Level} 

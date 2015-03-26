@@ -1,2 +1,22 @@
-Checking InitSmart.MonoidModule (/home/user/vcs/agda-cats/src/InitSmart/MonoidModule.agda).
-Finished InitSmart.MonoidModule.
+Checking InitSmart.MonoidSemantic (/home/user/vcs/agda-cats/src/InitSmart/MonoidSemantic.agda).
+ Skipping InitSmart.MonoidModule (/home/user/vcs/agda-cats/src/InitSmart/MonoidModule.agdai).
+ Skipping InitSmart.MonoidNormal (/home/user/vcs/agda-cats/src/InitSmart/MonoidNormal.agdai).
+/home/user/vcs/agda-cats/src/InitSmart/MonoidSemantic.agda:95,3-122,23
+Incomplete pattern matching for ⟦_⟧. Missing cases:
+  ⟦_⟧ {._} (NeutrLeftEqu {_} {_} {_})
+  ⟦_⟧ {._} (NeutrRightEqu {_} {_} {_})
+  ⟦_⟧ {._} (AssocEqu {_} {_} {_} {_} {_} {_} {_})
+  ⟦_⟧ {._} (MulObMulEqu {_} {_} {_} {_} {_} {_} _ _ _ _)
+  ⟦_⟧ {._} (NeutrLeftDownUpIsoEqu {_})
+  ⟦_⟧ {._} (NeutrLeftUpDownIsoEqu {_})
+  ⟦_⟧ {._} (NeutrLeftDownMorNatEqu {_} {_} _)
+  ⟦_⟧ {._} (NeutrLeftUpMorNatEqu {_} {_} _)
+  ⟦_⟧ {._} (NeutrRightDownUpIsoEqu {_})
+  ⟦_⟧ {._} (NeutrRightUpDownIsoEqu {_})
+  ⟦_⟧ {._} (NeutrRightDownMorNatEqu {_} {_} _)
+  ⟦_⟧ {._} (NeutrRightUpMorNatEqu {_} {_} _)
+  ⟦_⟧ {._} (AssocLeftIsoEqu {_} {_} {_})
+  ⟦_⟧ {._} (AssocRightIsoEqu {_} {_} {_})
+  ⟦_⟧ {._} (AssocLRMorNatEqu {_} {_} {_} {_} {_} {_} _ _ _)
+  ⟦_⟧ {._} (AssocRLMorNatEqu {_} {_} {_} {_} {_} {_} _ _ _)
+when checking the definition of ⟦_⟧

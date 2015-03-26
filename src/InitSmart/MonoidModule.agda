@@ -12,15 +12,15 @@ mutual
   --
   -- internal 'types' of terms
   --
-  data Tag : Set where
-    Ob : Tag
-    _⇒_ : (x y : « Ob ») → Tag
-    _≡_ : {x y : « Ob »} → (f g : « x ⇒ y ») → Tag
+  data «» : Set where
+    Ob : «»
+    _⇒_ : (x y : « Ob ») → «»
+    _≡_ : {x y : « Ob »} → (f g : « x ⇒ y ») → «»
 
   --
   -- terms of internal 'types'
   --
-  data «_» : Tag → Set where
+  data «_» : «» → Set where
 
     --=====================
     -- system : category structure
@@ -79,6 +79,32 @@ mutual
       « g ≡ g' » → 
       -------------------------------------------
       « f MulMor g ≡ f' MulMor g' »
+
+    -- identity is left neutral
+    NeutrLeftEqu : 
+
+      {x y : « Ob »} → 
+      {f : « x ⇒ y »} → 
+      -------------------
+      « IdMor MulMor f ≡ f »
+
+    -- identity is right neutral
+    NeutrRightEqu : 
+
+      {x y : « Ob »} → 
+      {f : « x ⇒ y »} → 
+      -------------------
+      « f MulMor IdMor ≡ f »
+
+    -- morphism composition is associative
+    AssocEqu : 
+
+      {a b c d : « Ob »} → 
+      {f : « a ⇒ b »} → 
+      {g : « b ⇒ c »} → 
+      {h : « c ⇒ d »} → 
+      ----------------------
+      « (f MulMor g) MulMor h ≡ f MulMor (g MulMor h) »
 
     --============================
     -- system : monoidal category structure
@@ -287,16 +313,16 @@ mutual
     --====================
 
     -- the carrier object
-    El : 
+    ElOb : 
       « Ob »
 
     -- the unity of the monoid
     IdEl : 
-      « IdOb ⇒ El »
+      « IdOb ⇒ ElOb »
 
     -- the binary operation of the monoid
     MulEl : 
-      « El MulOb El ⇒ El »
+      « ElOb MulOb ElOb ⇒ ElOb »
 
     -- left neutrality
     NeutralityLeftEqu : 
