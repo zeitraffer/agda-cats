@@ -22,8 +22,7 @@ idᴹ {0ᴼ} = Nilᴹ
 idᴹ {Sᴼ _} = SZ idᴹ
 
 _mulᴹ_ : {m n k : ‹ Ob ›} → ‹ m ⇒ n › → ‹ n ⇒ k › → ‹ m ⇒ k ›
-Nilᴹ mulᴹ Nilᴹ = Nilᴹ
-Nilᴹ mulᴹ (Zᴹ g) = Zᴹ (Nilᴹ mulᴹ g)
+Nilᴹ mulᴹ g = g
 (Zᴹ f) mulᴹ (Zᴹ g) = Zᴹ ((Zᴹ f) mulᴹ g)
 (Sᴹ f) mulᴹ (Zᴹ g) = Zᴹ ((Sᴹ f) mulᴹ g)
 (Zᴹ f) mulᴹ (Sᴹ g) = f mulᴹ g
@@ -68,14 +67,23 @@ _+ᴼidᴱ_ : (l r : ‹ Ob ›) → ‹ idᴹ +ᴼᴹ idᴹ ≡ idᴹ {l +ᴼ r
 0ᴼ +ᴼidᴱ r = idᴱ
 (Sᴼ l) +ᴼidᴱ r = idᴱ
 
-{- TODO
+{- TODO -}
+{-
+Nilᴹ mulᴹ g = g
+(Zᴹ f) mulᴹ (Zᴹ g) = Zᴹ ((Zᴹ f) mulᴹ g)
+(Sᴹ f) mulᴹ (Zᴹ g) = Zᴹ ((Sᴹ f) mulᴹ g)
+(Zᴹ f) mulᴹ (Sᴹ g) = f mulᴹ g
+(Sᴹ f) mulᴹ (Sᴹ g) = Sᴹ (f mulᴹ Sᴹ g)
+-}
+
 +ᴼmulᴱ : {l l' l'' r r' r'' : ‹ Ob ›} →
       (f : ‹ l ⇒ l' ›) → (f' : ‹ l' ⇒ l'' ›) →
       (g : ‹ r ⇒ r' ›) → (g' : ‹ r' ⇒ r'' ›) →
       ‹ (f mulᴹ f') +ᴼᴹ (g mulᴹ g') ≡ 
         (f +ᴼᴹ g) mulᴹ (f' +ᴼᴹ g') ›
 +ᴼmulᴱ Nilᴹ Nilᴹ _ _ = idᴱ
--}
++ᴼmulᴱ Nilᴹ (Zᴹ f') Nilᴹ _ = idᴱ
++ᴼmulᴱ Nilᴹ (Zᴹ f') (Zᴹ g) (Zᴹ g') = idᴱ
 
 ------------------------------------
 -- semantic functions
@@ -105,7 +113,7 @@ mutual
   ⟦ f MulObMor g ⟧ = ⟦ f ⟧ +ᴼᴹ ⟦ g ⟧
   ⟦ e MulObEqu e' ⟧ = ⟦ e ⟧ +ᴼᴱ ⟦ e' ⟧
   ⟦ l MulObIdEqu r ⟧ = ⟦ l ⟧ +ᴼidᴱ ⟦ r ⟧
---  ⟦ MulObMulEqu f f' g g' ⟧ = +ᴼmulᴱ ⟦ f ⟧ ⟦ f' ⟧ ⟦ g ⟧ ⟦ g' ⟧
+  ⟦ MulObMulEqu f f' g g' ⟧ = +ᴼmulᴱ ⟦ f ⟧ ⟦ f' ⟧ ⟦ g ⟧ ⟦ g' ⟧
   ⟦ NeutrLeftDownMor ⟧ = idᴹ
   ⟦ NeutrLeftUpMor ⟧ = idᴹ
   ⟦ NeutrRightDownMor ⟧ = neutrDᴹ
