@@ -3,87 +3,12 @@ module InitSmart.MonoidSemantic where
 open import InitSmart.MonoidModule
 open import InitSmart.MonoidNormal
 
+open import Structs.ListDef
+
 ------------------------------------
 -- helper functions
 ------------------------------------
 
-1ᴼ : ‹ Ob ›
-1ᴼ = Sᴼ 0ᴼ
-
-_+ᴼ_ : (n m : ‹ Ob ›) → ‹ Ob ›
-0ᴼ +ᴼ m = m
-(Sᴼ n) +ᴼ m = Sᴼ (n +ᴼ m)
-
-SZ : {n m : ‹ Ob ›} → ‹ n ⇒ m › → ‹ (Sᴼ n) ⇒ (Sᴼ m) ›
-SZ f = Sᴹ (Zᴹ f)
-
-idᴹ : {n : ‹ Ob ›} → ‹ n ⇒ n ›
-idᴹ {0ᴼ} = Nilᴹ
-idᴹ {Sᴼ _} = SZ idᴹ
-
-_mulᴹ_ : {m n k : ‹ Ob ›} → ‹ m ⇒ n › → ‹ n ⇒ k › → ‹ m ⇒ k ›
-Nilᴹ mulᴹ g = g
-(Zᴹ f) mulᴹ (Zᴹ g) = Zᴹ ((Zᴹ f) mulᴹ g)
-(Sᴹ f) mulᴹ (Zᴹ g) = Zᴹ ((Sᴹ f) mulᴹ g)
-(Zᴹ f) mulᴹ (Sᴹ g) = f mulᴹ g
-(Sᴹ f) mulᴹ (Sᴹ g) = Sᴹ (f mulᴹ Sᴹ g)
-
-_+ᴼᴹ_ : {m m' n n' : ‹ Ob ›} → ‹ m ⇒ m' › → ‹ n ⇒ n' › → ‹ (m +ᴼ n) ⇒ (m' +ᴼ n') ›
-Nilᴹ +ᴼᴹ g = g
-(Zᴹ f) +ᴼᴹ g = Zᴹ (f +ᴼᴹ g)
-(Sᴹ f) +ᴼᴹ g = Sᴹ (f +ᴼᴹ g)
-
-neutrDᴹ : {n : ‹ Ob ›} → ‹ (n +ᴼ 0ᴼ) ⇒ n ›
-neutrDᴹ {0ᴼ} = Nilᴹ
-neutrDᴹ {Sᴼ _} = SZ neutrDᴹ
-
-neutrUᴹ : {n : ‹ Ob ›} → ‹ n ⇒ (n +ᴼ 0ᴼ) ›
-neutrUᴹ {0ᴼ} = Nilᴹ
-neutrUᴹ {Sᴼ _} = SZ neutrUᴹ
-
-assocLRᴹ : {a b c : ‹ Ob ›} → ‹ ((a +ᴼ b) +ᴼ c) ⇒ (a +ᴼ (b +ᴼ c)) ›
-assocLRᴹ {0ᴼ} = idᴹ
-assocLRᴹ {Sᴼ n} = SZ (assocLRᴹ {n})
-
-assocRLᴹ : {a b c : ‹ Ob ›} → ‹ (a +ᴼ (b +ᴼ c)) ⇒ ((a +ᴼ b) +ᴼ c) ›
-assocRLᴹ {0ᴼ} = idᴹ
-assocRLᴹ {Sᴼ n} = SZ (assocRLᴹ {n})
-
-_mulᴱ_ : {x y : ‹ Ob ›} → {f g h : ‹ x ⇒ y ›} → ‹ f ≡ g › → ‹ g ≡ h › → ‹ f ≡ h ›
-idᴱ mulᴱ idᴱ = idᴱ
-
-invᴱ : {x y : ‹ Ob ›} → {f g : ‹ x ⇒ y ›} → ‹ f ≡ g › → ‹ g ≡ f ›
-invᴱ idᴱ = idᴱ
-
-_mulᴹᴱ_ : {x y z : ‹ Ob ›} → {f f' : ‹ x ⇒ y ›} → {g g' : ‹ y ⇒ z ›} → ‹ f ≡ f' › → ‹ g ≡ g' › → ‹ f mulᴹ g ≡ f' mulᴹ g' ›
-idᴱ mulᴹᴱ idᴱ = idᴱ
-
-_+ᴼᴱ_ : 
-    {l l' r r' : ‹ Ob ›} → {fl fl' : ‹ l ⇒ l' ›} → {fr fr' : ‹ r ⇒ r' ›} → 
-    ‹ fl ≡ fl' › → ‹ fr ≡ fr' › → ‹ fl +ᴼᴹ fr ≡ fl' +ᴼᴹ fr' ›
-idᴱ +ᴼᴱ idᴱ = idᴱ
-
-_+ᴼidᴱ_ : (l r : ‹ Ob ›) → ‹ idᴹ +ᴼᴹ idᴹ ≡ idᴹ {l +ᴼ r} ›
-0ᴼ +ᴼidᴱ r = idᴱ
-(Sᴼ l) +ᴼidᴱ r = idᴱ
-
-{- TODO -}
-{-
-Nilᴹ mulᴹ g = g
-(Zᴹ f) mulᴹ (Zᴹ g) = Zᴹ ((Zᴹ f) mulᴹ g)
-(Sᴹ f) mulᴹ (Zᴹ g) = Zᴹ ((Sᴹ f) mulᴹ g)
-(Zᴹ f) mulᴹ (Sᴹ g) = f mulᴹ g
-(Sᴹ f) mulᴹ (Sᴹ g) = Sᴹ (f mulᴹ Sᴹ g)
--}
-
-+ᴼmulᴱ : {l l' l'' r r' r'' : ‹ Ob ›} →
-      (f : ‹ l ⇒ l' ›) → (f' : ‹ l' ⇒ l'' ›) →
-      (g : ‹ r ⇒ r' ›) → (g' : ‹ r' ⇒ r'' ›) →
-      ‹ (f mulᴹ f') +ᴼᴹ (g mulᴹ g') ≡ 
-        (f +ᴼᴹ g) mulᴹ (f' +ᴼᴹ g') ›
-+ᴼmulᴱ Nilᴹ Nilᴹ _ _ = idᴱ
-+ᴼmulᴱ Nilᴹ (Zᴹ f') Nilᴹ _ = idᴱ
-+ᴼmulᴱ Nilᴹ (Zᴹ f') (Zᴹ g) (Zᴹ g') = idᴱ
 
 ------------------------------------
 -- semantic functions
@@ -91,16 +16,20 @@ Nilᴹ mulᴹ g = g
 mutual
 
   -- type mapping
-  [_] : «» → ‹›
+  [_] : 
+      {l : Layer} → 
+      “ l ” → ‘ l ’
   [ Ob ] = Ob
   [ x ⇒ y ] = ⟦ x ⟧ ⇒ ⟦ y ⟧
   [ f ≡ g ] = ⟦ f ⟧ ≡ ⟦ g ⟧
 
-  -- main semantic mapping
-  ⟦_⟧ : {t : «»} → « t » → ‹ [ t ] ›
+  -- term mapping
+  ⟦_⟧ : 
+      {l : Layer} → {t : “ l ”} → 
+      « t » → ‹ [ t ] ›
 
   -- category structure
-  ⟦ IdMor ⟧ = idᴹ
+  ⟦ IdMor ⟧ = mapList returnList
   ⟦ f MulMor g ⟧ = ⟦ f ⟧ mulᴹ ⟦ g ⟧
   ⟦ IdEqu ⟧ = idᴱ
   ⟦ e MulEqu e' ⟧ = ⟦ e ⟧ mulᴱ ⟦ e' ⟧

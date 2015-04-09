@@ -1,2 +1,3 @@
-Checking InitSmart.MonoidUnbias (/home/user/vcs/agda-cats/src/InitSmart/MonoidUnbias.agda).
-Finished InitSmart.MonoidUnbias.
+Checking Structs.RelationDef (/home/user/vcs/agda-cats/src/Structs/RelationDef.agda).
+ Skipping Structs.Common (/home/user/vcs/agda-cats/src/Structs/Common.agdai).
+Finished Structs.RelationDef.

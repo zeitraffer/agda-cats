@@ -1,16 +1,18 @@
 module InitSmart.MonoidNormal where
 
+open import Structs.Layer2
+open import Structs.UnitDef
+open import Structs.ListDef
+
 mutual
 
-  data ‹› : Set where
-    Ob : ‹›
-    _⇒_ : (x y : ‹ Ob ›) → ‹›
-    _≡_ : {x y : ‹ Ob ›} → (f g : ‹ x ⇒ y ›) → ‹›
+  data ‘_’ : Layer → Set where
+    Ob : ‘ LOb ’
+    _⇒_ : {ob : ‘ LOb ’} → (x y : ‹ ob ›) → ‘ LMor ’
+    _≡_ : {mor : ‘ LMor ’} → (f g : ‹ mor ›) → ‘ LEqu ’
 
-  data ‹_› : ‹› → Set where
-    0ᴼ : ‹ Ob ›
-    Sᴼ : ‹ Ob › → ‹ Ob ›
-    Nilᴹ : ‹ 0ᴼ ⇒ 0ᴼ › 
-    Zᴹ : {n m : ‹ Ob ›} → ‹ n ⇒ m › → ‹ n ⇒ (Sᴼ m) › 
-    Sᴹ : {n m : ‹ Ob ›} → ‹ n ⇒ (Sᴼ m) › → ‹ (Sᴼ n) ⇒ (Sᴼ m) ›
-    idᴱ : {n m : ‹ Ob ›} → {f : ‹ n ⇒ m ›} → ‹ f ≡ f ›
+  data ‹_› : {layer : Layer} → ‘ layer ’ → Set where
+    MkO : List Unit → ‹ Ob ›
+    MkM : (ll : List (List Unit)) → ‹ MkO (flattenList ll) ⇒ MkO (mapList final ll) › 
+    MkE : {mor : ‘ LMor ’} → {m m' : ‹ mor ›} → ‹ m ≡ m' › -- XXX fake
+
