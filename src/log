@@ -1,3 +1,5 @@
-Checking Structs.RelationDef (/home/user/vcs/agda-cats/src/Structs/RelationDef.agda).
+Checking Structs.SetoidDef (/home/user/vcs/agda-cats/src/Structs/SetoidDef.agda).
  Skipping Structs.Common (/home/user/vcs/agda-cats/src/Structs/Common.agdai).
-Finished Structs.RelationDef.
+ Checking Structs.RelationDef (/home/user/vcs/agda-cats/src/Structs/RelationDef.agda).
+ Finished Structs.RelationDef.
+Finished Structs.SetoidDef.

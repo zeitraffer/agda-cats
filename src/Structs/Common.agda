@@ -16,40 +16,29 @@ Type = Set
 -- `get w` method - extract from wrapped value `w`
 --
 
-record Wrap-Type-Class 
-    (X : Type) 
-    : Type 
-  where
-    constructor Mk
-    field
-      get-it : 
-          Type
-
 record Wrap-Class 
-    {X : Type}
-    (type : Wrap-Type-Class X)
+    (X WX : Type)
     : Type
   where
     constructor Mk
     field
       get-get : 
-          X → Wrap-Type-Class.get-it type
+          WX → X
       get-wrap : 
-          Wrap-Type-Class.get-it type → X
+          X → WX
+open Wrap-Class
 
 get : 
-    {X : Type} → 
-    {type : Wrap-Type-Class X} →
-    ⦃ wrapper : Wrap-Class type ⦄ → 
-    X → Wrap-Type-Class.get-it type
-get ⦃ wrapper ⦄ = Wrap-Class.get-get wrapper
+    {X WX : Type} → 
+    ⦃ w : Wrap-Class X WX ⦄ → 
+    WX → X
+get ⦃ w ⦄ = get-get w
 
 wrap : 
-    {X : Type} → 
-    {type : Wrap-Type-Class X} →
-    ⦃ getter : Wrap-Class type ⦄ → 
-    Wrap-Type-Class.get-it type → X
-wrap ⦃ wrapper ⦄ = Wrap-Class.get-wrap wrapper
+    {X WX : Type} → 
+    ⦃ w : Wrap-Class X WX ⦄ → 
+    X → WX
+wrap ⦃ w ⦄ = get-wrap w
 
 -------------------------------------------
 -- `Ob-Class` class - for structures over carrier
@@ -65,10 +54,11 @@ record Ob-Class
     field 
       get-ob : 
           X → Type
+open Ob-Class
 
 Ob : 
     {X : Type} →
     ⦃ ob : Ob-Class X ⦄ →
     X → Type
-Ob ⦃ ob ⦄ = Ob-Class.get-ob ob
+Ob ⦃ ob ⦄ = get-ob ob
 

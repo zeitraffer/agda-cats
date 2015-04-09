@@ -95,3 +95,20 @@ open A-Record
 
 testRA : (ar : A-Record) -> ob ar -> Set
 testRA ar = fiber {{iaob ar}}
+
+------------------------------------------------------------------------
+
+record C-Class (X Y : Set) : Set where
+  constructor Mk
+  field value : X
+open C-Class {{...}}
+
+testC : {X Y : Set} -> {{ic : C-Class X Y}} -> X
+testC = value
+
+instance 
+  T-C : C-Class T T
+  T-C = Mk !
+
+testCT : T
+testCT = value

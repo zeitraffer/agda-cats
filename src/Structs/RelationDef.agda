@@ -26,16 +26,10 @@ record Relation-Class
       get-it : 
           Relation-Type X X
 
-instance
-  Relation-Class-Wrap-Type : 
-      {X : Type} → 
-      Wrap-Type-Class (Relation-Class X)
-  Relation-Class-Wrap-Type {X} = Mk (Relation-Type X X)
-
 instance  
   Relation-Class-Wrap : 
       {X : Type} → 
-      Wrap-Class (Relation-Class-Wrap-Type {X})
+      Wrap-Class (Relation-Type X X) (Relation-Class X)
   Relation-Class-Wrap {X} = Mk Relation-Class.get-it Mk
 
 -- the only method
@@ -55,19 +49,11 @@ record _`⟶`_
           Relation-Class.get-it rel src dst
 
 instance
-  ⟶-Wrap-Type : 
-      {X : Type} → 
-      ⦃ rel : Relation-Class X ⦄ → 
-      {src dst : X} → 
-      Wrap-Type-Class (src `⟶` dst)
-  ⟶-Wrap-Type {X} ⦃ rel ⦄ {src} {dst} = Mk (Relation-Class.get-it rel src dst)
-
-instance
   ⟶-Wrap : 
       {X : Type} → 
       ⦃ rel : Relation-Class X ⦄ → 
       {src dst : X} → 
-      Wrap-Class (⟶-Wrap-Type {src = src} {dst = dst})
+      Wrap-Class (Relation-Class.get-it rel src dst) (src `⟶` dst)
   ⟶-Wrap = Mk _`⟶`_.get-it Mk
 
 --------------------------------------------------------------
@@ -85,16 +71,10 @@ record
       get-it : 
           Relation-Type X X
 
-instance
-  Relation-Class'-Wrap-Type : 
-      {X : Type} → 
-      Wrap-Type-Class (Relation-Class' X)
-  Relation-Class'-Wrap-Type {X} = Mk (Relation-Type X X)
-
 instance  
   Relation-Class'-Wrap : 
       {X : Type} → 
-      Wrap-Class (Relation-Class'-Wrap-Type {X})
+      Wrap-Class (Relation-Type X X) (Relation-Class' X)
   Relation-Class'-Wrap {X} = Mk Relation-Class'.get-it Mk
 
 -- the only method
@@ -113,19 +93,11 @@ record _`⇸`_
           Relation-Class'.get-it rel src dst
 
 instance
-  ⇸-Wrap-Type : 
-      {X : Type} → 
-      ⦃ rel : Relation-Class' X ⦄ → 
-      {src dst : X} → 
-      Wrap-Type-Class (src `⇸` dst)
-  ⇸-Wrap-Type {X} ⦃ rel ⦄ {src} {dst} = Mk (Relation-Class'.get-it rel src dst)
-
-instance
   ⇸-Wrap : 
       {X : Type} → 
       ⦃ rel : Relation-Class' X ⦄ → 
       {src dst : X} → 
-      Wrap-Class (⇸-Wrap-Type {src = src} {dst = dst})
+      Wrap-Class (Relation-Class'.get-it rel src dst) (src `⇸` dst)
   ⇸-Wrap = Mk _`⇸`_.get-it Mk
 
 -----------------------------------------------------------
@@ -142,8 +114,8 @@ record
       f-rel-inst : Relation-Class f-ob
 
 instance
-  Relation-Ob : Ob-Class Relation-Record
-  Relation-Ob = Mk Relation-Record.f-ob
+  Relation-Record-Ob : Ob-Class Relation-Record
+  Relation-Record-Ob = Mk Relation-Record.f-ob
 
 -----------------------------
 -- instances
