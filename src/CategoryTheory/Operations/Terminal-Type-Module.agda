@@ -3,8 +3,8 @@
 module CategoryTheory.Operations.Terminal-Type-Module where
 
 open import CategoryTheory.Common-Module
-open import CategoryTheory.Classes.Relation-Module
-open import CategoryTheory.Instances.Type-Relation-Module
+open import CategoryTheory.Classes.0-Relation-Module
+open import CategoryTheory.Instances.Type-0-Relation-Module
 
 data Terminal-Type 
     : Type
@@ -13,7 +13,7 @@ data Terminal-Type
       : Terminal-Type
 
 data Terminal-Equ-Type
-    : Relation-Type Terminal-Type Terminal-Type
+    : 0-Relation-Type Terminal-Type Terminal-Type
   where
     Mk-Terminal-Equ 
       : Terminal-Equ-Type Mk-Terminal Mk-Terminal

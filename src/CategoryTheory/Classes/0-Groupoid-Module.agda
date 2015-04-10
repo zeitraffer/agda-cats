@@ -3,7 +3,7 @@
 module CategoryTheory.Classes.0-Groupoid-Module where
 
 open import CategoryTheory.Common-Module
-open import CategoryTheory.Classes.Relation-Module
+open import CategoryTheory.Classes.0-Relation-Module
 open import CategoryTheory.Classes.0-Category-Module
 
 --------------------------------------
@@ -12,7 +12,7 @@ open import CategoryTheory.Classes.0-Category-Module
 
 record 0-Groupoid-Class 
     {X : Type} 
-    {relX : Relation-Class X} 
+    {relX : 0-Relation-Class X} 
     (catX : 0-Category-Class relX) : 
     Type  
   where
@@ -25,7 +25,7 @@ open 0-Groupoid-Class public
 -- inverse method
 _0-Inv_ :
     {X : Type} → 
-    {relX : Relation-Class X} → 
+    {relX : 0-Relation-Class X} → 
     {catX : 0-Category-Class relX} → 
     ⦃ grpX : 0-Groupoid-Class catX ⦄ → 
     {x y : X} → (x ⟶ y) → (y ⟶ x)
@@ -40,11 +40,11 @@ record 0-Groupoid-Record
       get-grp-cat-rec
         : 0-Category-Record
     -- and helpers
-    get-grp-rel-rec : Relation-Record
+    get-grp-rel-rec : 0-Relation-Record
     get-grp-rel-rec = get-cat-rel-rec get-grp-cat-rec
     get-grp-ob-type : Type
     get-grp-ob-type = get-rel-ob-type get-grp-rel-rec
-    get-grp-rel-inst : Relation-Class get-grp-ob-type
+    get-grp-rel-inst : 0-Relation-Class get-grp-ob-type
     get-grp-rel-inst = get-rel-rel-inst get-grp-rel-rec
     get-grp-cat-inst : 0-Category-Class get-grp-rel-inst
     get-grp-cat-inst = get-cat-cat-inst get-grp-cat-rec

@@ -3,7 +3,7 @@
 module CategoryTheory.Classes.0-Category-Module where
 
 open import CategoryTheory.Common-Module
-open import CategoryTheory.Classes.Relation-Module
+open import CategoryTheory.Classes.0-Relation-Module
 
 --------------------------------------
 -- `0-Category-Class` to be a preorder
@@ -11,7 +11,7 @@ open import CategoryTheory.Classes.Relation-Module
 
 record 0-Category-Class 
     {X : Type} 
-    (relX : Relation-Class X) 
+    (relX : 0-Relation-Class X) 
     : Type  
   where
     constructor Mk
@@ -25,7 +25,7 @@ open 0-Category-Class public
 -- identity method
 0-Id : 
     {X : Type} → 
-    {relX : Relation-Class X} → 
+    {relX : 0-Relation-Class X} → 
     ⦃ catX : 0-Category-Class relX ⦄ → 
     {x : X} → (x ⟶ x)
 0-Id ⦃ catX ⦄ = get-cat-0-Id catX 
@@ -33,7 +33,7 @@ open 0-Category-Class public
 -- multiplication method
 _0-Mul_ :
     {X : Type} → 
-    {relX : Relation-Class X} → 
+    {relX : 0-Relation-Class X} → 
     ⦃ catX : 0-Category-Class relX ⦄ → 
     {x y z : X} → (x ⟶ y) → (y ⟶ z) → (x ⟶ z)
 _0-Mul_ ⦃ catX ⦄ = get-cat-0-Mul catX 
@@ -45,12 +45,12 @@ record 0-Category-Record
     constructor Mk
     field
       get-cat-rel-rec 
-        : Relation-Record
+        : 0-Relation-Record
 
     -- and helpers
     get-cat-ob-type : Type
     get-cat-ob-type = get-rel-ob-type get-cat-rel-rec
-    get-cat-rel-inst : Relation-Class get-cat-ob-type
+    get-cat-rel-inst : 0-Relation-Class get-cat-ob-type
     get-cat-rel-inst = get-rel-rel-inst get-cat-rel-rec
 
     field
