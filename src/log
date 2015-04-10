@@ -1,5 +1,7 @@
-Checking Structs.SetoidDef (/home/user/vcs/agda-cats/src/Structs/SetoidDef.agda).
- Skipping Structs.Common (/home/user/vcs/agda-cats/src/Structs/Common.agdai).
- Checking Structs.RelationDef (/home/user/vcs/agda-cats/src/Structs/RelationDef.agda).
- Finished Structs.RelationDef.
-Finished Structs.SetoidDef.
+Checking CategoryTheory.Instances.Type-0-Category-Module (/home/user/vcs/agda-cats/src/CategoryTheory/Instances/Type-0-Category-Module.agda).
+ Skipping CategoryTheory.Common-Module (/home/user/vcs/agda-cats/src/CategoryTheory/Common-Module.agdai).
+  Skipping CategoryTheory.Classes.Relation-Module (/home/user/vcs/agda-cats/src/CategoryTheory/Classes/Relation-Module.agdai).
+ Skipping CategoryTheory.Classes.0-Category-Module (/home/user/vcs/agda-cats/src/CategoryTheory/Classes/0-Category-Module.agdai).
+ Skipping CategoryTheory.Instances.Type-Relation-Module (/home/user/vcs/agda-cats/src/CategoryTheory/Instances/Type-Relation-Module.agdai).
+ Skipping CategoryTheory.Operations.Type-0-Category-Module (/home/user/vcs/agda-cats/src/CategoryTheory/Operations/Type-0-Category-Module.agdai).
+Finished CategoryTheory.Instances.Type-0-Category-Module.

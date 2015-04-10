@@ -1,6 +1,6 @@
 {-# OPTIONS --type-in-type --copatterns #-}
 
-module Structs.Common where
+module CategoryTheory.Common-Module where
 
 ------------------------------
 -- `Type` - an obvious synonym
@@ -12,7 +12,7 @@ Type = Set
 ------------------------------------------
 -- `Wrap-Class` class - for isomorphic wrappers
 --
--- `wrap x` method - wrap `x` into wrapper type
+-- `wrap x` method - wrap `x` into wrapped value
 -- `get w` method - extract from wrapped value `w`
 --
 

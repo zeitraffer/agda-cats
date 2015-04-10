@@ -1,8 +1,8 @@
 {-# OPTIONS --type-in-type --copatterns #-}
 
-module Structs.RelationDef where
+module CategoryTheory.Classes.Relation-Module where
 
-open import Structs.Common
+open import CategoryTheory.Common-Module
 
 -----------------------------
 -- `Relation` type-synonym
@@ -23,8 +23,8 @@ record Relation-Class
   where
     constructor Mk
     field 
-      get-it : 
-          Relation-Type X X
+      get-it 
+        : Relation-Type X X
 
 instance  
   Relation-Class-Wrap : 
@@ -45,8 +45,8 @@ record _`⟶`_
   where
     constructor Mk
     field 
-      get-it : 
-          Relation-Class.get-it rel src dst
+      get-it 
+        : Relation-Class.get-it rel src dst
 
 instance
   ⟶-Wrap : 
@@ -68,8 +68,8 @@ record
   where
     constructor Mk
     field 
-      get-it : 
-          Relation-Type X X
+      get-it 
+        : Relation-Type X X
 
 instance  
   Relation-Class'-Wrap : 
@@ -89,8 +89,8 @@ record _`⇸`_
   where
     constructor Mk
     field 
-      get-it : 
-          Relation-Class'.get-it rel src dst
+      get-it 
+        : Relation-Class'.get-it rel src dst
 
 instance
   ⇸-Wrap : 
@@ -110,22 +110,13 @@ record
   where
     constructor Mk
     field
-      f-ob : Type
-      f-rel-inst : Relation-Class f-ob
+      get-rel-ob-type 
+        : Type
+      ⦃ get-rel-rel-inst ⦄
+        : Relation-Class get-rel-ob-type
+open Relation-Record public
 
 instance
   Relation-Record-Ob : Ob-Class Relation-Record
-  Relation-Record-Ob = Mk Relation-Record.f-ob
-
------------------------------
--- instances
---
-
-instance
-  Type-Relation : Relation-Class Type
-  Type-Relation = Mk λ a b → (a → b)
-
-instance
-  Type-Relation' : Relation-Class' Type
-  Type-Relation' = Mk λ a b → Relation-Type a b
+  Relation-Record-Ob = Mk get-rel-ob-type
 
