@@ -86,18 +86,16 @@ mutual
       -- type of commutative squares
       Square
 
-        : {layer-ob layer-mor layer-equ : Layer} 
-        → {⟹ₕ : layer-ob ↠ layer-mor }
-        → {⟹ᵥ : layer-ob ↠ layer-mor }
-        → {ob : “ layer-ob ”} 
+        : {ob : “ Ob ”} 
+        → {⟹ₕ : Ob ↠ Mor }
+        → {⟹ᵥ : Ob ↠ Mor }
         → {x11 x12 x21 x22 : « ob »}
-        → layer-mor ↠ layer-equ
         → « x11 ∙ ⟹ₕ ∙ x12 »
         → « x21 ∙ ⟹ₕ ∙ x22 »
         → « x11 ∙ ⟹ᵥ ∙ x21 »
         → « x12 ∙ ⟹ᵥ ∙ x22 »
         ----------------------
-        → “ layer-equ ”
+        → “ Equ ”
 
 
   ---------------------------------------
@@ -115,31 +113,39 @@ mutual
 
       IdMor 
         : {ob : “ Ob ”} 
-        → {⟹ : Ob ↠ Mor }
         → (x : « ob »)
-        → « x ∙ ⟹ ∙ x »
+        → « x ∙ ⇒ ∙ x »
+
+      IdIso 
+        : {ob : “ Ob ”} 
+        → (x : « ob »)
+        → « x ∙ ⇔ ∙ x »
 
       _MulMor_ 
         : {ob : “ Ob ”} 
-        → {⟹ : Ob ↠ Mor }
         → {x y z : « ob »} 
-        → « x ∙ ⟹ ∙ y »
-        → « y ∙ ⟹ ∙ z »
-        → « x ∙ ⟹ ∙ z »
+        → « x ∙ ⇒ ∙ y »
+        → « y ∙ ⇒ ∙ z »
+        → « x ∙ ⇒ ∙ z »
+
+      _MulIso_ 
+        : {ob : “ Ob ”} 
+        → {x y z : « ob »} 
+        → « x ∙ ⇔ ∙ y »
+        → « y ∙ ⇔ ∙ z »
+        → « x ∙ ⇔ ∙ z »
 
       IdEqu 
         : {mor : “ Mor ”} 
-        → {≡≡ : Mor ↠ Equ }
         → (f : « mor »)
-        → « f ∙ ≡≡ ∙ f »
+        → « f ∙ ≡ ∙ f »
 
       _MulEqu_ 
         : {mor : “ Mor ”} 
-        → {≡≡ : Mor ↠ Equ }
         → {f g h : « mor »} 
-        → « f ∙ ≡≡ ∙ g »
-        → « g ∙ ≡≡ ∙ h »
-        → « f ∙ ≡≡ ∙ h »
+        → « f ∙ ≡ ∙ g »
+        → « g ∙ ≡ ∙ h »
+        → « f ∙ ≡ ∙ h »
 
       InvEqu 
         : {mor : “ Mor ”} 
@@ -149,44 +155,61 @@ mutual
 
       _MulMorEqu_
         : {ob : “ Ob ”}
-        → {⟹ : Ob ↠ Mor }
-        → {≡≡ : Mor ↠ Equ }
         → {x y z : « ob »} 
-        → {f f' : « x ∙ ⟹ ∙ y »} 
-        → {g g' : « y ∙ ⟹ ∙ z »} 
-        → « f ∙ ≡≡ ∙ f' »
-        → « g ∙ ≡≡ ∙ g' »
-        → « f MulMor g ∙ ≡≡ ∙ f' MulMor g' »
+        → {f f' : « x ∙ ⇒ ∙ y »} 
+        → {g g' : « y ∙ ⇒ ∙ z »} 
+        → « f ∙ ≡ ∙ f' »
+        → « g ∙ ≡ ∙ g' »
+        → « f MulMor g ∙ ≡ ∙ f' MulMor g' »
 
-      NeutrLeftEqu
+      _MulIsoEqu_
         : {ob : “ Ob ”}
-        → {⟹ : Ob ↠ Mor }
+        → {x y z : « ob »} 
+        → {f f' : « x ∙ ⇔ ∙ y »} 
+        → {g g' : « y ∙ ⇔ ∙ z »} 
+        → « f ∙ ≡ ∙ f' »
+        → « g ∙ ≡ ∙ g' »
+        → « f MulIso g ∙ ≡ ∙ f' MulIso g' »
+
+      MorNeutrLeftEqu
+        : {ob : “ Ob ”}
         → {x y : « ob »} 
-        → (f : « x ∙ ⟹ ∙ y »)
+        → (f : « x ∙ ⇒ ∙ y »)
         → « IdMor x MulMor f ∙ ≡ ∙ f »
 
-      NeutrRightEqu
+      MorNeutrRightEqu
         : {ob : “ Ob ”}
-        → {⟹ : Ob ↠ Mor }
         → {x y : « ob »} 
-        → (f : « x ∙ ⟹ ∙ y »)
+        → (f : « x ∙ ⇒ ∙ y »)
         → « f MulMor IdMor y ∙ ≡ ∙ f »
 
-      -- redundant
-      NeutrBothEqu
+      IsoNeutrLeftEqu
         : {ob : “ Ob ”}
-        → {⟹ : Ob ↠ Mor }
-        → (x : « ob »)
-        → « IdMor x MulMor IdMor x ∙ ≡ ∙ IdMor {⟹ = ⟹} x »
+        → {x y : « ob »} 
+        → (f : « x ∙ ⇔ ∙ y »)
+        → « IdIso x MulIso f ∙ ≡ ∙ f »
 
-      AssocEqu
+      IsoNeutrRightEqu
         : {ob : “ Ob ”}
-        → {⟹ : Ob ↠ Mor }
+        → {x y : « ob »} 
+        → (f : « x ∙ ⇔ ∙ y »)
+        → « f MulIso IdIso y ∙ ≡ ∙ f »
+
+      MorAssocEqu
+        : {ob : “ Ob ”}
         → {x y z t : « ob »} 
-        → (f : « x ∙ ⟹ ∙ y ») 
-        → (g : « y ∙ ⟹ ∙ z ») 
-        → (h : « z ∙ ⟹ ∙ t ») 
+        → (f : « x ∙ ⇒ ∙ y ») 
+        → (g : « y ∙ ⇒ ∙ z ») 
+        → (h : « z ∙ ⇒ ∙ t ») 
         → « (f MulMor g) MulMor h ∙ ≡ ∙ f MulMor (g MulMor h) »
+
+      IsoAssocEqu
+        : {ob : “ Ob ”}
+        → {x y z t : « ob »} 
+        → (f : « x ∙ ⇔ ∙ y ») 
+        → (g : « y ∙ ⇔ ∙ z ») 
+        → (h : « z ∙ ⇔ ∙ t ») 
+        → « (f MulIso g) MulIso h ∙ ≡ ∙ f MulIso (g MulIso h) »
 
     --=============================================
     -- isomorphisms
@@ -306,30 +329,64 @@ mutual
         → (i : « x ∙ ⇔ ∙ y »)
         → « InvIso i ∙ ≡ ∙ MkIso (InvEqu (IsoEndEqu i)) (InvEqu (IsoBeginEqu i)) »
 
-      IdIsoEqu      
+      IdIsoForwardEqu
         : {ob : “ Ob ”} 
         → {x : « ob »} 
-        → « IdMor x ∙ ≡ ∙ MkIso (NeutrBothEqu x) (InvEqu (NeutrBothEqu x)) »
+        → « IsoForwardMor (IdIso x) ∙ ≡ ∙ IdMor x »
+
+      IdIsoBackwardEqu
+        : {ob : “ Ob ”} 
+        → {x : « ob »} 
+        → « IsoBackwardMor (IdIso x) ∙ ≡ ∙ IdMor x »
+
+      MulIsoForwardEqu
+        : {ob : “ Ob ”} 
+        → {x y z : « ob »} 
+        → {ixy : « x ∙ ⇔ ∙ y »}
+        → {iyz : « y ∙ ⇔ ∙ z »}
+        → « IsoForwardMor (ixy MulIso iyz) ∙ ≡ ∙ 
+            (IsoForwardMor ixy) MulMor (IsoForwardMor iyz) »
+
+      MulIsoBackwardEqu
+        : {ob : “ Ob ”} 
+        → {x y z : « ob »} 
+        → {ixy : « x ∙ ⇔ ∙ y »}
+        → {iyz : « y ∙ ⇔ ∙ z »}
+        → « IsoBackwardMor (ixy MulIso iyz) ∙ ≡ ∙ 
+            (IsoBackwardMor iyz) MulMor (IsoBackwardMor ixy) »
 
     --=============================================
     -- commutative squares
     --=============================================
 
-      -- square as equation
+      -- make square as equation
       MkSquareMorMor
 
-          : {≡≡ : Mor ↠ Equ}
-          → {⟹ : Ob ↠ Mor }
-          → {ob : “ Ob ”} 
-          → {x11 x12 x21 x22 : « ob »}
-          → {f1x : « x11 ∙ ⟹ ∙ x12 »}
-          → {f2x : « x21 ∙ ⟹ ∙ x22 »}
-          → {fx1 : « x11 ∙ ⟹ ∙ x21 »}
-          → {fx2 : « x12 ∙ ⟹ ∙ x22 »}
-          → « (f1x MulMor fx2) ∙ ≡≡ ∙ (fx1 MulMor f2x) »
-          ---------------------------------
-          → « Square ≡≡ f1x f2x fx1 fx2 »
+        : {ob : “ Ob ”} 
+        → {x11 x12 x21 x22 : « ob »}
+        → {f1x : « x11 ∙ ⇒ ∙ x12 »}
+        → {f2x : « x21 ∙ ⇒ ∙ x22 »}
+        → {fx1 : « x11 ∙ ⇒ ∙ x21 »}
+        → {fx2 : « x12 ∙ ⇒ ∙ x22 »}
+        → « f1x MulMor fx2 ∙ ≡ ∙ fx1 MulMor f2x »
+        ---------------------------------
+        → « Square f1x f2x fx1 fx2 »
 
+      -- extract equation from square
+      SquareMorMorEqu
+
+        : {≡ : Mor ↠ Equ}
+        → {ob : “ Ob ”} 
+        → {x11 x12 x21 x22 : « ob »}
+        → {f1x : « x11 ∙ ⇒ ∙ x12 »}
+        → {f2x : « x21 ∙ ⇒ ∙ x22 »}
+        → {fx1 : « x11 ∙ ⇒ ∙ x21 »}
+        → {fx2 : « x12 ∙ ⇒ ∙ x22 »}
+        → « Square f1x f2x fx1 fx2 »
+        ---------------------------------
+        → « f1x MulMor fx2 ∙ ≡ ∙ fx1 MulMor f2x »
+
+      -- TODO Square for Iso
 
     --=============================================
     -- the terminal category structure
@@ -342,15 +399,15 @@ mutual
         : (x : « ① »)
         → « MkOneOb ∙ ⇔ ∙ x »
 
-      OneCorrectIsoFrwNatEqu
+      OneCorrectIsoNatEqu
         : {x y : « ① »}
         → (f : « x ∙ ⇒ ∙ y »)
-        → « Square ≡ 
+        → « Square 
             (IdMor MkOneOb) f 
             (OneCorrectIso x) (OneCorrectIso y) »
 
       OneOkEqu      
-        : « OneCorrectIso MkOneOb ∙ ≡ ∙ IdMor MkOneOb »
+        : « OneCorrectIso MkOneOb ∙ ≡ ∙ IdIso MkOneOb »
 
     --=============================================
     -- product of categories structure
@@ -478,7 +535,7 @@ mutual
         : {obl obr : “ Ob ”}
         → {p q : « obl ⊗ obr »}
         → (f : « p ∙ ⇒ ∙ q »)
-        → « Square ≡
+        → « Square
             (PairLeftMor f MkPairMor PairRightMor f) f
             (MkPairCorrectIso p) (MkPairCorrectIso q) »
 
@@ -488,7 +545,7 @@ mutual
         → {r r' : « obr »}
         → (fl : « l ∙ ⇒ ∙ l' »)
         → (fr : « r ∙ ⇒ ∙ r' »)
-        → « Square ≡
+        → « Square
             (PairLeftMor (fl MkPairMor fr)) fl
             (l PairLeftCorrectIso r) (l' PairLeftCorrectIso r') »
 
@@ -498,7 +555,7 @@ mutual
         → {r r' : « obr »}
         → (fl : « l ∙ ⇒ ∙ l' »)
         → (fr : « r ∙ ⇒ ∙ r' »)
-        → « Square ≡ 
+        → « Square 
             (PairRightMor (fl MkPairMor fr)) fr
             (l PairRightCorrectIso r) (l' PairRightCorrectIso r') »
 
