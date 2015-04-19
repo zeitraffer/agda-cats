@@ -42,7 +42,7 @@ mutual
 
   infix 1 _⊗_ _∙_∙_
   infixl 10 _MulMor_ _MulEqu_ _MulMorEqu_ 
-  infixl 10 _MkPairOb_ _MkPairMor_ _MkPairEqu_ 
+  infixl 10 _MkPairOb_ _MkPairMor_ _MkPairMEqu_ _MkPairIEqu_ 
 
   ---------------------------------------
   -- internal 'types' of terms
@@ -410,6 +410,47 @@ mutual
         : « OneCorrectIso MkOneOb ∙ ≡ ∙ IdIso MkOneOb »
 
     --=============================================
+    -- the terminal category structure
+    --=============================================
+
+      TerminalOb
+        : « ① »
+        → « ⋆ »
+
+      TerminalMor
+        : {x y : « ① »}
+        → « x ∙ ⇒ ∙ y »
+        → « TerminalOb x ∙ ⇒ ∙ TerminalOb y »
+
+      TerminalIso
+        : {x y : « ① »}
+        → « x ∙ ⇔ ∙ y »
+        → « TerminalOb x ∙ ⇔ ∙ TerminalOb y »
+
+      TerminalMEqu
+        : {x y : « ① »}
+        → {f g : « x ∙ ⇒ ∙ y »}
+        → « f ∙ ≡ ∙ g »
+        → « TerminalMor f ∙ ≡ ∙ TerminalMor g »
+
+      TerminalIEqu
+        : {x y : « ① »}
+        → {f g : « x ∙ ⇔ ∙ y »}
+        → « f ∙ ≡ ∙ g »
+        → « TerminalIso f ∙ ≡ ∙ TerminalIso g »
+
+      TerminalUnitMor
+        : (x : « ⋆ »)
+        → « x ∙ ⇒ ∙ TerminalOb MkOneOb »
+
+      TerminalUnitMorNatMEqu
+        : {x y : « ⋆ »}
+        → (f : « x ∙ ⇔ ∙ y »)
+        → « Square
+            f (TerminalMor (IdMor MkOneOb)) 
+            (TerminalUnitMor x) (TerminalUnitMor y) »
+
+    --=============================================
     -- product of categories structure
     --=============================================
 
@@ -427,7 +468,15 @@ mutual
         → « r ∙ ⇒ ∙ r' »
         → « l MkPairOb r ∙ ⇒ ∙ l' MkPairOb r' »
 
-      _MkPairEqu_
+      _MkPairIso_
+        : {obl obr : “ Ob ”}
+        → {l l' : « obl »}
+        → {r r' : « obr »}
+        → « l ∙ ⇔ ∙ l' »
+        → « r ∙ ⇔ ∙ r' »
+        → « l MkPairOb r ∙ ⇔ ∙ l' MkPairOb r' »
+
+      _MkPairMEqu_
         : {obl obr : “ Ob ”}
         → {l l' : « obl »}
         → {r r' : « obr »}
@@ -436,6 +485,16 @@ mutual
         → « fl ∙ ≡ ∙ fl' »
         → « fr ∙ ≡ ∙ fr' »
         → « fl MkPairMor fr ∙ ≡ ∙ fl' MkPairMor fr' »
+
+      _MkPairIEqu_
+        : {obl obr : “ Ob ”}
+        → {l l' : « obl »}
+        → {r r' : « obr »}
+        → {fl fl' : « l ∙ ⇔ ∙ l' »}
+        → {fr fr' : « r ∙ ⇔ ∙ r' »}
+        → « fl ∙ ≡ ∙ fl' »
+        → « fr ∙ ≡ ∙ fr' »
+        → « fl MkPairIso fr ∙ ≡ ∙ fl' MkPairIso fr' »
 
       PairLeftOb
         : {obl obr : “ Ob ”}
@@ -453,25 +512,51 @@ mutual
         → « p ∙ ⇒ ∙ q »
         → « PairLeftOb p ∙ ⇒ ∙ PairLeftOb q »
 
+      PairLeftIso
+        : {obl obr : “ Ob ”}
+        → {p q : « obl ⊗ obr »}
+        → « p ∙ ⇔ ∙ q »
+        → « PairLeftOb p ∙ ⇔ ∙ PairLeftOb q »
+
       PairRightMor
         : {obl obr : “ Ob ”}
         → {p q : « obl ⊗ obr »}
         → « p ∙ ⇒ ∙ q »
         → « PairRightOb p ∙ ⇒ ∙ PairRightOb q »
 
-      PairLeftEqu
+      PairRightIso
+        : {obl obr : “ Ob ”}
+        → {p q : « obl ⊗ obr »}
+        → « p ∙ ⇔ ∙ q »
+        → « PairRightOb p ∙ ⇔ ∙ PairRightOb q »
+
+      PairLeftMEqu
         : {obl obr : “ Ob ”}
         → {p q : « obl ⊗ obr »}
         → {f g : « p ∙ ⇒ ∙ q »}
         → « f ∙ ≡ ∙ g »
         → « PairLeftMor f ∙ ≡ ∙ PairLeftMor g »
 
-      PairRightEqu
+      PairLeftIEqu
+        : {obl obr : “ Ob ”}
+        → {p q : « obl ⊗ obr »}
+        → {f g : « p ∙ ⇔ ∙ q »}
+        → « f ∙ ≡ ∙ g »
+        → « PairLeftIso f ∙ ≡ ∙ PairLeftIso g »
+
+      PairRightMEqu
         : {obl obr : “ Ob ”}
         → {p q : « obl ⊗ obr »}
         → {f g : « p ∙ ⇒ ∙ q »}
         → « f ∙ ≡ ∙ g »
         → « PairRightMor f ∙ ≡ ∙ PairRightMor g »
+
+      PairRightIEqu
+        : {obl obr : “ Ob ”}
+        → {p q : « obl ⊗ obr »}
+        → {f g : « p ∙ ⇔ ∙ q »}
+        → « f ∙ ≡ ∙ g »
+        → « PairRightIso f ∙ ≡ ∙ PairRightIso g »
 
       _MkPairIdEqu_
         : {obl obr : “ Ob ”}
@@ -490,29 +575,64 @@ mutual
         → « (fl MulMor gl) MkPairMor (fr MulMor gr) ∙ ≡ ∙ 
             (fl MkPairMor fr) MulMor (gl MkPairMor gr) »
 
-      PairLeftIdEqu
+      MkPairIsoEqu
+        : {obl obr : “ Ob ”}
+        → {al bl cl : « obl »}
+        → {ar br cr : « obr »}
+        → (fl : « al ∙ ⇔ ∙ bl »)
+        → (gl : « bl ∙ ⇔ ∙ cl »)
+        → (fr : « ar ∙ ⇔ ∙ br »)
+        → (gr : « br ∙ ⇔ ∙ cr »)
+        → « (fl MulIso gl) MkPairIso (fr MulIso gr) ∙ ≡ ∙ 
+            (fl MkPairIso fr) MulIso (gl MkPairIso gr) »
+
+      PairLeftIdMEqu
         : {obl obr : “ Ob ”}
         → (p : « obl ⊗ obr »)
         → « PairLeftMor (IdMor p) ∙ ≡ ∙ IdMor (PairLeftOb p) »
 
-      PairRightIdEqu
+      PairLeftIdIEqu
+        : {obl obr : “ Ob ”}
+        → (p : « obl ⊗ obr »)
+        → « PairLeftIso (IdIso p) ∙ ≡ ∙ IdIso (PairLeftOb p) »
+
+      PairRightIdMEqu
         : {obl obr : “ Ob ”}
         → (p : « obl ⊗ obr »)
         → « PairRightMor (IdMor p) ∙ ≡ ∙ IdMor (PairRightOb p) »
 
-      _PairLeftMulEqu_
+      PairRightIdIEqu
+        : {obl obr : “ Ob ”}
+        → (p : « obl ⊗ obr »)
+        → « PairRightIso (IdIso p) ∙ ≡ ∙ IdIso (PairRightOb p) »
+
+      _PairLeftMulMEqu_
         : {obl obr : “ Ob ”}
         → {p q r : « obl ⊗ obr »}
         → (f : « p ∙ ⇒ ∙ q »)
         → (g : « q ∙ ⇒ ∙ r »)
         → « PairLeftMor (f MulMor g) ∙ ≡ ∙ PairLeftMor f MulMor PairLeftMor g »
 
-      _PairRightMulEqu_
+      _PairLeftMulIEqu_
+        : {obl obr : “ Ob ”}
+        → {p q r : « obl ⊗ obr »}
+        → (f : « p ∙ ⇔ ∙ q »)
+        → (g : « q ∙ ⇔ ∙ r »)
+        → « PairLeftIso (f MulIso g) ∙ ≡ ∙ PairLeftIso f MulIso PairLeftIso g »
+
+      _PairRightMulMEqu_
         : {obl obr : “ Ob ”}
         → {p q r : « obl ⊗ obr »}
         → (f : « p ∙ ⇒ ∙ q »)
         → (g : « q ∙ ⇒ ∙ r »)
         → « PairRightMor (f MulMor g) ∙ ≡ ∙ PairRightMor f MulMor PairRightMor g »
+
+      _PairRightMulIEqu_
+        : {obl obr : “ Ob ”}
+        → {p q r : « obl ⊗ obr »}
+        → (f : « p ∙ ⇔ ∙ q »)
+        → (g : « q ∙ ⇔ ∙ r »)
+        → « PairRightIso (f MulIso g) ∙ ≡ ∙ PairRightIso f MulIso PairRightIso g »
 
       MkPairCorrectIso
         : {obl obr : “ Ob ”}
@@ -531,7 +651,7 @@ mutual
         → (r : « obr »)
         → « PairRightOb (l MkPairOb r) ∙ ⇔ ∙ r »
 
-      MkPairCorrectIsoNatEqu
+      MkPairCorrectIsoNatMEqu
         : {obl obr : “ Ob ”}
         → {p q : « obl ⊗ obr »}
         → (f : « p ∙ ⇒ ∙ q »)
@@ -539,7 +659,15 @@ mutual
             (PairLeftMor f MkPairMor PairRightMor f) f
             (MkPairCorrectIso p) (MkPairCorrectIso q) »
 
-      _PairLeftCorrectIsoNatEqu_
+      MkPairCorrectIsoNatIEqu
+        : {obl obr : “ Ob ”}
+        → {p q : « obl ⊗ obr »}
+        → (f : « p ∙ ⇔ ∙ q »)
+        → « Square
+            (PairLeftIso f MkPairIso PairRightIso f) f
+            (MkPairCorrectIso p) (MkPairCorrectIso q) »
+
+      _PairLeftCorrectIsoNatMEqu_
         : {obl obr : “ Ob ”}
         → {l l' : « obl »}
         → {r r' : « obr »}
@@ -549,7 +677,17 @@ mutual
             (PairLeftMor (fl MkPairMor fr)) fl
             (l PairLeftCorrectIso r) (l' PairLeftCorrectIso r') »
 
-      _PairRightCorrectIsoNatEqu_
+      _PairLeftCorrectIsoNatIEqu_
+        : {obl obr : “ Ob ”}
+        → {l l' : « obl »}
+        → {r r' : « obr »}
+        → (fl : « l ∙ ⇔ ∙ l' »)
+        → (fr : « r ∙ ⇔ ∙ r' »)
+        → « Square
+            (PairLeftIso (fl MkPairIso fr)) fl
+            (l PairLeftCorrectIso r) (l' PairLeftCorrectIso r') »
+
+      _PairRightCorrectIsoNatMEqu_
         : {obl obr : “ Ob ”}
         → {l l' : « obl »}
         → {r r' : « obr »}
@@ -559,3 +697,14 @@ mutual
             (PairRightMor (fl MkPairMor fr)) fr
             (l PairRightCorrectIso r) (l' PairRightCorrectIso r') »
 
+      _PairRightCorrectIsoNatIEqu_
+        : {obl obr : “ Ob ”}
+        → {l l' : « obl »}
+        → {r r' : « obr »}
+        → (fl : « l ∙ ⇔ ∙ l' »)
+        → (fr : « r ∙ ⇔ ∙ r' »)
+        → « Square 
+            (PairRightIso (fl MkPairIso fr)) fr
+            (l PairRightCorrectIso r) (l' PairRightCorrectIso r') »
+
+      -- TODO relation Pair/Iso
