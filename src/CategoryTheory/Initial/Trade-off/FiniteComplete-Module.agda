@@ -6,9 +6,13 @@ module CategoryTheory.Initial.Trade-off.FiniteComplete-Module where
 -- `Layer` - level in categorical syntax
 -- 
 
-data Layer : Set where
-  LZero : Layer
-  LSucc : Layer → Layer
+data Layer 
+    : Set 
+  where
+    LZero 
+      : Layer
+    LSucc 
+      : Layer → Layer
 
 Ob : Layer
 Ob = LZero
@@ -19,9 +23,24 @@ Mor = LSucc Ob
 Equ : Layer
 Equ = LSucc Mor  
 
+--------------------------------
+-- `_↠_` - styles of morphisms
+-- 
+
+data _↠_
+    : (arg res : Layer) → Set 
+  where
+    ⇒ 
+      : Ob ↠ Mor
+    ⇔ 
+      : Ob ↠ Mor
+    ≡ 
+      : Mor ↠ Equ
+
+------------------------------------------
 mutual
 
-  infix 1 _⊠_ _⇒_ _⇔_ _≡_
+  infix 1 _⊗_ _∙_∙_
   infixl 10 _MulMor_ _MulEqu_ _MulMorEqu_ 
   infixl 10 _CatPairOb_ _CatPairMor_ _CatPairEqu_ 
 
@@ -33,32 +52,51 @@ mutual
       → Set 
     where
 
-      -- objects
-      ∗ 
+      -- type of objects of the specified category
+      ⋆ 
+
+        --------
         : “ Ob ”
 
-      -- pairs of objects
-      _⊠_ 
-        : (left right : “ Ob ”) 
+      -- type of objects of terminal category
+      ① 
+
+        --------
+        : “ Ob ”
+
+      -- type of pairs of objects
+      _⊗_ 
+
+        : “ Ob ”
+        → “ Ob ”
+        ---------
         → “ Ob ”
 
-      -- morphisms
-      _⇒_ 
-        : {t : “ Ob ”} 
-        → (source target : « t ») 
-        → “ Mor ”
+      -- creates a morphism type of a given style from two objects
+      _∙_∙_ 
 
-      -- isomorphisms
-      _⇔_ 
-        : {t : “ Ob ”} 
-        → (source target : « t ») 
-        → “ Mor ”
+        : {layer-ob layer-mor : Layer} 
+        → {ob : “ layer-ob ”} 
+        → « ob » 
+        → layer-ob ↠ layer-mor
+        → « ob » 
+        ---------------
+        → “ layer-mor ”
 
-      -- equalities
-      _≡_ 
-        : {t : “ Mor ”} 
-        → (source target : « t ») 
-        → “ Equ ”
+      -- type of commutative squares
+      Square
+
+        : {layer-ob layer-mor layer-equ : Layer} 
+        → layer-mor ↠ layer-equ
+        → {⟹ : layer-ob ↠ layer-mor }
+        → {ob : “ layer-ob ”} 
+        → {x11 x12 x21 x22 : « ob »}
+        → « x11 ∙ ⟹ ∙ x12 »
+        → « x21 ∙ ⟹ ∙ x22 »
+        → « x11 ∙ ⟹ ∙ x21 »
+        → « x12 ∙ ⟹ ∙ x22 »
+        ----------------------
+        → “ layer-equ ”
 
 
   ---------------------------------------
@@ -76,62 +114,71 @@ mutual
 
       IdMor 
         : {ob : “ Ob ”} 
-        → {x : « ob »} 
-        → « x ⇒ x »
+        → {⟹ : Ob ↠ Mor }
+        → (x : « ob »)
+        → « x ∙ ⟹ ∙ x »
 
       _MulMor_ 
         : {ob : “ Ob ”} 
+        → {⟹ : Ob ↠ Mor }
         → {x y z : « ob »} 
-        → « x ⇒ y »
-        → « y ⇒ z »
-        → « x ⇒ z »
+        → « x ∙ ⟹ ∙ y »
+        → « y ∙ ⟹ ∙ z »
+        → « x ∙ ⟹ ∙ z »
 
       IdEqu 
         : {mor : “ Mor ”} 
-        → {f : « mor »}
-        → « f ≡ f »
+        → {≡≡ : Mor ↠ Equ }
+        → (f : « mor »)
+        → « f ∙ ≡≡ ∙ f »
 
       _MulEqu_ 
         : {mor : “ Mor ”} 
+        → {≡≡ : Mor ↠ Equ }
         → {f g h : « mor »} 
-        → « f ≡ g »
-        → « g ≡ h »
-        → « f ≡ h »
+        → « f ∙ ≡≡ ∙ g »
+        → « g ∙ ≡≡ ∙ h »
+        → « f ∙ ≡≡ ∙ h »
 
       InvEqu 
         : {mor : “ Mor ”} 
         → {f g : « mor »} 
-        → « f ≡ g »
-        → « g ≡ f »
+        → « f ∙ ≡ ∙ g »
+        → « g ∙ ≡ ∙ f »
 
       _MulMorEqu_
         : {ob : “ Ob ”}
+        → {⟹ : Ob ↠ Mor }
+        → {≡≡ : Mor ↠ Equ }
         → {x y z : « ob »} 
-        → {f f' : « x ⇒ y »} 
-        → {g g' : « y ⇒ z »} 
-        → « f ≡ f' »
-        → « g ≡ g' »
-        → « f MulMor g ≡ f' MulMor g' »
+        → {f f' : « x ∙ ⟹ ∙ y »} 
+        → {g g' : « y ∙ ⟹ ∙ z »} 
+        → « f ∙ ≡≡ ∙ f' »
+        → « g ∙ ≡≡ ∙ g' »
+        → « f MulMor g ∙ ≡≡ ∙ f' MulMor g' »
 
       NeutrLeftEqu
         : {ob : “ Ob ”}
+        → {⟹ : Ob ↠ Mor }
         → {x y : « ob »} 
-        → {f : « x ⇒ y »} 
-        → « IdMor MulMor f ≡ f »
+        → (f : « x ∙ ⟹ ∙ y »)
+        → « IdMor x MulMor f ∙ ≡ ∙ f »
 
       NeutrRightEqu
         : {ob : “ Ob ”}
+        → {⟹ : Ob ↠ Mor }
         → {x y : « ob »} 
-        → {f : « x ⇒ y »} 
-        → « f MulMor IdMor ≡ f »
+        → (f : « x ∙ ⟹ ∙ y »)
+        → « f MulMor IdMor y ∙ ≡ ∙ f »
 
       AssocEqu
         : {ob : “ Ob ”}
+        → {⟹ : Ob ↠ Mor }
         → {x y z t : « ob »} 
-        → {f : « x ⇒ y »} 
-        → {g : « y ⇒ z »} 
-        → {h : « z ⇒ t »} 
-        → « (f MulMor g) MulMor h ≡ f MulMor (g MulMor h) »
+        → (f : « x ∙ ⟹ ∙ y ») 
+        → (g : « y ∙ ⟹ ∙ z ») 
+        → (h : « z ∙ ⟹ ∙ t ») 
+        → « (f MulMor g) MulMor h ∙ ≡ ∙ f MulMor (g MulMor h) »
 
     --=============================================
     -- isomorphisms
@@ -141,121 +188,152 @@ mutual
       MkIso
         : {ob : “ Ob ”} 
         → {x y : « ob »} 
-        → {forward : « x ⇒ y »}
-        → {backward : « y ⇒ x »}
-        → « forward MulMor backward ≡ IdMor »
-        → « IdMor ≡ backward MulMor forward »
-        → « x ⇔ y »
+        → {forward : « x ∙ ⇒ ∙ y »}
+        → {backward : « y ∙ ⇒ ∙ x »}
+        → « forward MulMor backward ∙ ≡ ∙ IdMor x »
+        → « IdMor y ∙ ≡ ∙ backward MulMor forward »
+        → « x ∙ ⇔ ∙ y »
 
       -- forward component of isomorphism
       IsoForwardMor
         : {ob : “ Ob ”} 
         → {x y : « ob »} 
-        → « x ⇔ y »
-        → « x ⇒ y »
+        → « x ∙ ⇔ ∙ y »
+        → « x ∙ ⇒ ∙ y »
 
       -- backward component of isomorphism
       IsoBackwardMor
         : {ob : “ Ob ”} 
         → {x y : « ob »} 
-        → « x ⇔ y »
-        → « y ⇒ x »
+        → « x ∙ ⇔ ∙ y »
+        → « y ∙ ⇒ ∙ x »
 
       -- equation of isomorphism at the begin object
       IsoBeginEqu
         : {ob : “ Ob ”} 
         → {x y : « ob »} 
-        → (i : « x ⇔ y »)
-        → « (IsoForwardMor i) MulMor (IsoBackwardMor i) ≡ IdMor »
+        → (i : « x ∙ ⇔ ∙ y »)
+        → « (IsoForwardMor i) MulMor (IsoBackwardMor i) ∙ ≡ ∙ IdMor x »
 
       -- equation of isomorphism at the end object
       IsoEndEqu
         : {ob : “ Ob ”} 
         → {x y : « ob »} 
-        → (i : « x ⇔ y »)
-        → « IdMor ≡ (IsoBackwardMor i) MulMor (IsoForwardMor i) »
+        → (i : « x ∙ ⇔ ∙ y »)
+        → « IdMor y ∙ ≡ ∙ (IsoBackwardMor i) MulMor (IsoForwardMor i) »
 
       -- decompose and than compose isomorphism 
       MkIsoCorrectEqu
         : {ob : “ Ob ”} 
         → {x y : « ob »} 
-        → (i : « x ⇔ y »)
-        → « i ≡ MkIso (IsoBeginEqu i) (IsoEndEqu i) »
+        → (i : « x ∙ ⇔ ∙ y »)
+        → « i ∙ ≡ ∙ MkIso (IsoBeginEqu i) (IsoEndEqu i) »
 
       -- compose and decompose isomorphism, at forward
       IsoForwardMorCorrectEqu
         : {ob : “ Ob ”} 
         → {x y : « ob »} 
-        → {forward : « x ⇒ y »}
-        → {backward : « y ⇒ x »}
-        → (ex : « forward MulMor backward ≡ IdMor »)
-        → (ey : « IdMor ≡ backward MulMor forward »)
-        → « IsoForwardMor (MkIso ex ey) ≡ forward »
+        → {forward : « x ∙ ⇒ ∙ y »}
+        → {backward : « y ∙ ⇒ ∙ x »}
+        → (ex : « forward MulMor backward ∙ ≡ ∙ IdMor x »)
+        → (ey : « IdMor y ∙ ≡ ∙ backward MulMor forward »)
+        → « IsoForwardMor (MkIso ex ey) ∙ ≡ ∙ forward »
 
       -- compose and decompose isomorphism, at backward
       IsoBackwardMorCorrectEqu
         : {ob : “ Ob ”} 
         → {x y : « ob »} 
-        → {forward : « x ⇒ y »}
-        → {backward : « y ⇒ x »}
-        → (ex : « forward MulMor backward ≡ IdMor »)
-        → (ey : « IdMor ≡ backward MulMor forward »)
-        → « IsoBackwardMor (MkIso ex ey) ≡ backward »
+        → {forward : « x ∙ ⇒ ∙ y »}
+        → {backward : « y ∙ ⇒ ∙ x »}
+        → (ex : « forward MulMor backward ∙ ≡ ∙ IdMor x »)
+        → (ey : « IdMor y ∙ ≡ ∙ backward MulMor forward »)
+        → « IsoBackwardMor (MkIso ex ey) ∙ ≡ ∙ backward »
 
       -- morphism constructor acts on equalities
       MkIsoEqu
         : {ob : “ Ob ”} 
         → {x y : « ob »} 
-        → {forward forward' : « x ⇒ y »}
-        → {backward backward' : « y ⇒ x »}
-        → (ex : « forward MulMor backward ≡ IdMor »)
-        → (ey : « IdMor ≡ backward MulMor forward »)
-        → (ex' : « forward' MulMor backward' ≡ IdMor »)
-        → (ey' : « IdMor ≡ backward' MulMor forward' »)
-        → (eforw : « forward ≡ forward' »)
-        → (eback : « backward ≡ backward' »)
-        → « MkIso ex ey ≡ MkIso ex' ey' »
+        → {forward forward' : « x ∙ ⇒ ∙ y »}
+        → {backward backward' : « y ∙ ⇒ ∙ x »}
+        → {ex : « forward MulMor backward ∙ ≡ ∙ IdMor x »}
+        → {ey : « IdMor y ∙ ≡ ∙ backward MulMor forward »}
+        → {ex' : « forward' MulMor backward' ∙ ≡ ∙ IdMor x »}
+        → {ey' : « IdMor y ∙ ≡ ∙ backward' MulMor forward' »}
+        → (eforw : « forward ∙ ≡ ∙ forward' »)
+        → (eback : « backward ∙ ≡ ∙ backward' »)
+        → « MkIso ex ey ∙ ≡ ∙ MkIso ex' ey' »
 
       -- forward projection acts on equalities
       IsoForwardMorEqu
         : {ob : “ Ob ”} 
         → {x y : « ob »} 
-        → {i i' : « x ⇔ y »}
-        → « i ≡ i' »
-        → « IsoForwardMor i ≡ IsoForwardMor i' »
+        → {i i' : « x ∙ ⇔ ∙ y »}
+        → « i ∙ ≡ ∙ i' »
+        → « IsoForwardMor i ∙ ≡ ∙ IsoForwardMor i' »
 
       -- backward projection acts on equalities
       IsoBackwardMorEqu
         : {ob : “ Ob ”} 
         → {x y : « ob »} 
-        → {i i' : « x ⇔ y »}
-        → « i ≡ i' »
-        → « IsoBackwardMor i ≡ IsoBackwardMor i' »
+        → {i i' : « x ∙ ⇔ ∙ y »}
+        → « i ∙ ≡ ∙ i' »
+        → « IsoBackwardMor i ∙ ≡ ∙ IsoBackwardMor i' »
 
       InvIso
         : {ob : “ Ob ”} 
         → {x y : « ob »} 
-        → « x ⇔ y »
-        → « y ⇔ x »
+        → « x ∙ ⇔ ∙ y »
+        → « y ∙ ⇔ ∙ x »
 
       InvIsoEqu
         : {ob : “ Ob ”} 
         → {x y : « ob »} 
-        → {i i' : « x ⇔ y »}
-        → « i ≡ i' »
-        → « InvIso i ≡ InvIso i' »
+        → {i i' : « x ∙ ⇔ ∙ y »}
+        → « i ∙ ≡ ∙ i' »
+        → « InvIso i ∙ ≡ ∙ InvIso i' »
 
-      InvForwardIsoEqu
+      InvDefEqu
         : {ob : “ Ob ”} 
         → {x y : « ob »} 
-        → (i : « x ⇔ y »)
-        → « IsoForwardMor (InvIso i) ≡ IsoBackwardMor i »
+        → (i : « x ∙ ⇔ ∙ y »)
+        → « InvIso i ∙ ≡ ∙ MkIso (InvEqu (IsoEndEqu i)) (InvEqu (IsoBeginEqu i)) »
 
-      InvBackwardIsoEqu
-        : {ob : “ Ob ”} 
-        → {x y : « ob »} 
-        → (i : « x ⇔ y »)
-        → « IsoBackwardMor (InvIso i) ≡ IsoForwardMor i »
+    --
+    --
+    --
+
+      -- square as equation
+      MkSquare
+
+          : {≡≡ : Mor ↠ Equ}
+          → {⟹ : Ob ↠ Mor }
+          → {ob : “ Ob ”} 
+          → {x11 x12 x21 x22 : « ob »}
+          → {f1x : « x11 ∙ ⟹ ∙ x12 »}
+          → {f2x : « x21 ∙ ⟹ ∙ x22 »}
+          → {fx1 : « x11 ∙ ⟹ ∙ x21 »}
+          → {fx2 : « x12 ∙ ⟹ ∙ x22 »}
+          → « (f1x MulMor fx2) ∙ ≡≡ ∙ (fx1 MulMor f2x) »
+          ---------------------------------
+          → « Square ≡≡ f1x f2x fx1 fx2 »
+
+
+    --=============================================
+    -- the terminal category structure
+    --=============================================
+
+      CatOneOb
+        : « ① »
+
+      CatOneCorrectIso
+        : (x : « ① »)
+        → « x ∙ ⇔ ∙ CatOneOb »
+
+--      TerminalCorrectIsoFrwNatEqu
+--      TerminalCorrectIsoBckNatEqu
+
+--      OneCorrectOkEqu      
+--        → « OneCorrectIso MkOneOb ∙ ≡ ∙ IdIso »
 
     --=============================================
     -- product of categories structure
@@ -265,173 +343,173 @@ mutual
         : {obl obr : “ Ob ”}
         → « obl »
         → « obr »
-        → « obl ⊠ obr »
+        → « obl ⊗ obr »
 
       _CatPairMor_
         : {obl obr : “ Ob ”}
         → {l l' : « obl »}
         → {r r' : « obr »}
-        → « l ⇒ l' »
-        → « r ⇒ r' »
-        → « l CatPairOb r ⇒ l' CatPairOb r' »
+        → « l ∙ ⇒ ∙ l' »
+        → « r ∙ ⇒ ∙ r' »
+        → « l CatPairOb r ∙ ⇒ ∙ l' CatPairOb r' »
 
       _CatPairEqu_
         : {obl obr : “ Ob ”}
         → {l l' : « obl »}
         → {r r' : « obr »}
-        → {fl fl' : « l ⇒ l' »}
-        → {fr fr' : « r ⇒ r' »}
-        → « fl ≡ fl' »
-        → « fr ≡ fr' »
-        → « fl CatPairMor fr ≡ fl' CatPairMor fr' »
+        → {fl fl' : « l ∙ ⇒ ∙ l' »}
+        → {fr fr' : « r ∙ ⇒ ∙ r' »}
+        → « fl ∙ ≡ ∙ fl' »
+        → « fr ∙ ≡ ∙ fr' »
+        → « fl CatPairMor fr ∙ ≡ ∙ fl' CatPairMor fr' »
 
       CatProjLeftOb
         : {obl obr : “ Ob ”}
-        → « obl ⊠ obr »
+        → « obl ⊗ obr »
         → « obl »
 
       CatProjRightOb
         : {obl obr : “ Ob ”}
-        → « obl ⊠ obr »
+        → « obl ⊗ obr »
         → « obr »
 
       CatProjLeftMor
         : {obl obr : “ Ob ”}
-        → {p q : « obl ⊠ obr »}
-        → « p ⇒ q »
-        → « CatProjLeftOb p ⇒ CatProjLeftOb q »
+        → {p q : « obl ⊗ obr »}
+        → « p ∙ ⇒ ∙ q »
+        → « CatProjLeftOb p ∙ ⇒ ∙ CatProjLeftOb q »
 
       CatProjRightMor
         : {obl obr : “ Ob ”}
-        → {p q : « obl ⊠ obr »}
-        → « p ⇒ q »
-        → « CatProjRightOb p ⇒ CatProjRightOb q »
+        → {p q : « obl ⊗ obr »}
+        → « p ∙ ⇒ ∙ q »
+        → « CatProjRightOb p ∙ ⇒ ∙ CatProjRightOb q »
 
       CatProjLeftEqu
         : {obl obr : “ Ob ”}
-        → {p q : « obl ⊠ obr »}
-        → {f g : « p ⇒ q »}
-        → « f ≡ g »
-        → « CatProjLeftMor f ≡ CatProjLeftMor g »
+        → {p q : « obl ⊗ obr »}
+        → {f g : « p ∙ ⇒ ∙ q »}
+        → « f ∙ ≡ ∙ g »
+        → « CatProjLeftMor f ∙ ≡ ∙ CatProjLeftMor g »
 
       CatProjRightEqu
         : {obl obr : “ Ob ”}
-        → {p q : « obl ⊠ obr »}
-        → {f g : « p ⇒ q »}
-        → « f ≡ g »
-        → « CatProjRightMor f ≡ CatProjRightMor g »
+        → {p q : « obl ⊗ obr »}
+        → {f g : « p ∙ ⇒ ∙ q »}
+        → « f ∙ ≡ ∙ g »
+        → « CatProjRightMor f ∙ ≡ ∙ CatProjRightMor g »
 
       CatPairIdEqu
         : {obl obr : “ Ob ”}
         → {l : « obl »}
         → {r : « obr »}
-        → « IdMor CatPairMor IdMor ≡ IdMor {x = l CatPairOb r} »
+        → « IdMor l CatPairMor IdMor r ∙ ≡ ∙ IdMor (l CatPairOb r) »
 
       CatPairMorEqu
         : {obl obr : “ Ob ”}
         → {al bl cl : « obl »}
         → {ar br cr : « obr »}
-        → {fl : « al ⇒ bl »}
-        → {gl : « bl ⇒ cl »}
-        → {fr : « ar ⇒ br »}
-        → {gr : « br ⇒ cr »}
-        → « (fl MulMor gl) CatPairMor (fr MulMor gr) ≡ 
+        → {fl : « al ∙ ⇒ ∙ bl »}
+        → {gl : « bl ∙ ⇒ ∙ cl »}
+        → {fr : « ar ∙ ⇒ ∙ br »}
+        → {gr : « br ∙ ⇒ ∙ cr »}
+        → « (fl MulMor gl) CatPairMor (fr MulMor gr) ∙ ≡ ∙ 
             (fl CatPairMor fr) MulMor (gl CatPairMor gr) »
 
       CatProjLeftIdEqu
         : {obl obr : “ Ob ”}
-        → {p : « obl ⊠ obr »}
-        → « CatProjLeftMor (IdMor {x = p}) ≡ IdMor {x = CatProjLeftOb p} »
+        → {p : « obl ⊗ obr »}
+        → « CatProjLeftMor (IdMor p) ∙ ≡ ∙ IdMor (CatProjLeftOb p) »
 
       CatProjRightIdEqu
         : {obl obr : “ Ob ”}
-        → {p : « obl ⊠ obr »}
-        → « CatProjRightMor (IdMor {x = p}) ≡ IdMor {x = CatProjRightOb p} »
+        → {p : « obl ⊗ obr »}
+        → « CatProjRightMor (IdMor p) ∙ ≡ ∙ IdMor (CatProjRightOb p) »
 
       CatProjLeftMulEqu
         : {obl obr : “ Ob ”}
-        → {p q r : « obl ⊠ obr »}
-        → {f : « p ⇒ q »}
-        → {g : « q ⇒ r »}
-        → « CatProjLeftMor (f MulMor g) ≡ CatProjLeftMor f MulMor CatProjLeftMor g »
+        → {p q r : « obl ⊗ obr »}
+        → {f : « p ∙ ⇒ ∙ q »}
+        → {g : « q ∙ ⇒ ∙ r »}
+        → « CatProjLeftMor (f MulMor g) ∙ ≡ ∙ CatProjLeftMor f MulMor CatProjLeftMor g »
 
       CatProjRightMulEqu
         : {obl obr : “ Ob ”}
-        → {p q r : « obl ⊠ obr »}
-        → {f : « p ⇒ q »}
-        → {g : « q ⇒ r »}
-        → « CatProjRightMor (f MulMor g) ≡ CatProjRightMor f MulMor CatProjRightMor g »
+        → {p q r : « obl ⊗ obr »}
+        → {f : « p ∙ ⇒ ∙ q »}
+        → {g : « q ∙ ⇒ ∙ r »}
+        → « CatProjRightMor (f MulMor g) ∙ ≡ ∙ CatProjRightMor f MulMor CatProjRightMor g »
 
-      CatPairIso
+      CatPairCorrectIso
         : {obl obr : “ Ob ”}
-        → {p : « obl ⊠ obr »}
-        → « CatProjLeftOb p CatPairOb CatProjRightOb p ⇔ p »
+        → {p : « obl ⊗ obr »}
+        → « CatProjLeftOb p CatPairOb CatProjRightOb p ∙ ⇔ ∙ p »
 
-      CatProjLeftIso
-        : {obl obr : “ Ob ”}
-        → {l : « obl »}
-        → {r : « obr »}
-        → « CatProjLeftOb (l CatPairOb r) ⇔ l »
-
-      CatProjRightIso
+      CatProjLeftCorrectIso
         : {obl obr : “ Ob ”}
         → {l : « obl »}
         → {r : « obr »}
-        → « CatProjRightOb (l CatPairOb r) ⇔ r »
+        → « CatProjLeftOb (l CatPairOb r) ∙ ⇔ ∙ l »
 
-      CatPairIsoFrwNatEqu
+      CatProjRightCorrectIso
         : {obl obr : “ Ob ”}
-        → {p q : « obl ⊠ obr »}
-        → {f : « p ⇒ q »}
-        → « (CatProjLeftMor f CatPairMor CatProjRightMor f) MulMor IsoForwardMor CatPairIso 
-             ≡ 
-            IsoForwardMor CatPairIso MulMor f »
+        → {l : « obl »}
+        → {r : « obr »}
+        → « CatProjRightOb (l CatPairOb r) ∙ ⇔ ∙ r »
 
-      CatPairIsoBckNatEqu
+      CatPairCorrectIsoFrwNatEqu
         : {obl obr : “ Ob ”}
-        → {p q : « obl ⊠ obr »}
-        → {f : « p ⇒ q »}
-        → « IsoBackwardMor CatPairIso MulMor (CatProjLeftMor f CatPairMor CatProjRightMor f) 
-             ≡ 
-            f MulMor IsoBackwardMor CatPairIso »
+        → {p q : « obl ⊗ obr »}
+        → {f : « p ∙ ⇒ ∙ q »}
+        → « (CatProjLeftMor f CatPairMor CatProjRightMor f) MulMor IsoForwardMor CatPairCorrectIso 
+             ∙ ≡ ∙ 
+            IsoForwardMor CatPairCorrectIso MulMor f »
 
-      CatProjLeftIsoFrwNatEqu
+      CatPairCorrectIsoBkwNatEqu
         : {obl obr : “ Ob ”}
-        → {l l' : « obl »}
-        → {r r' : « obr »}
-        → {fl : « l ⇒ l' »}
-        → {fr : « r ⇒ r' »}
-        → « CatProjLeftMor (fl CatPairMor fr) MulMor IsoForwardMor CatProjLeftIso 
-             ≡ 
-            IsoForwardMor CatProjLeftIso MulMor fl »
+        → {p q : « obl ⊗ obr »}
+        → {f : « p ∙ ⇒ ∙ q »}
+        → « IsoBackwardMor CatPairCorrectIso MulMor (CatProjLeftMor f CatPairMor CatProjRightMor f) 
+             ∙ ≡ ∙ 
+            f MulMor IsoBackwardMor CatPairCorrectIso »
 
-      CatProjLeftIsoBckNatEqu
+      CatProjLeftCorrectIsoFrwNatEqu
         : {obl obr : “ Ob ”}
         → {l l' : « obl »}
         → {r r' : « obr »}
-        → {fl : « l ⇒ l' »}
-        → {fr : « r ⇒ r' »}
-        → « IsoBackwardMor CatProjLeftIso MulMor CatProjLeftMor (fl CatPairMor fr) 
-             ≡ 
-            fl MulMor IsoBackwardMor CatProjLeftIso »
+        → {fl : « l ∙ ⇒ ∙ l' »}
+        → {fr : « r ∙ ⇒ ∙ r' »}
+        → « CatProjLeftMor (fl CatPairMor fr) MulMor IsoForwardMor CatProjLeftCorrectIso 
+             ∙ ≡ ∙ 
+            IsoForwardMor CatProjLeftCorrectIso MulMor fl »
 
-      CatProjRightIsoFrwNatEqu
+      CatProjLeftCorrectIsoBkwNatEqu
         : {obl obr : “ Ob ”}
         → {l l' : « obl »}
         → {r r' : « obr »}
-        → {fl : « l ⇒ l' »}
-        → {fr : « r ⇒ r' »}
-        → « CatProjRightMor (fl CatPairMor fr) MulMor IsoForwardMor CatProjRightIso 
-             ≡ 
-            IsoForwardMor CatProjRightIso MulMor fr »
+        → {fl : « l ∙ ⇒ ∙ l' »}
+        → {fr : « r ∙ ⇒ ∙ r' »}
+        → « IsoBackwardMor CatProjLeftCorrectIso MulMor CatProjLeftMor (fl CatPairMor fr) 
+             ∙ ≡ ∙ 
+            fl MulMor IsoBackwardMor CatProjLeftCorrectIso »
 
-      CatProjRightIsoBckNatEqu
+      CatProjRightCorrectIsoFrwNatEqu
         : {obl obr : “ Ob ”}
         → {l l' : « obl »}
         → {r r' : « obr »}
-        → {fl : « l ⇒ l' »}
-        → {fr : « r ⇒ r' »}
-        → « IsoBackwardMor CatProjRightIso MulMor CatProjRightMor (fl CatPairMor fr) 
-             ≡ 
-            fr MulMor IsoBackwardMor CatProjRightIso »
+        → {fl : « l ∙ ⇒ ∙ l' »}
+        → {fr : « r ∙ ⇒ ∙ r' »}
+        → « CatProjRightMor (fl CatPairMor fr) MulMor IsoForwardMor CatProjRightCorrectIso 
+             ∙ ≡ ∙ 
+            IsoForwardMor CatProjRightCorrectIso MulMor fr »
+
+      CatProjRightCorrectIsoBkwNatEqu
+        : {obl obr : “ Ob ”}
+        → {l l' : « obl »}
+        → {r r' : « obr »}
+        → {fl : « l ∙ ⇒ ∙ l' »}
+        → {fr : « r ∙ ⇒ ∙ r' »}
+        → « IsoBackwardMor CatProjRightCorrectIso MulMor CatProjRightMor (fl CatPairMor fr) 
+             ∙ ≡ ∙ 
+            fr MulMor IsoBackwardMor CatProjRightCorrectIso »
 

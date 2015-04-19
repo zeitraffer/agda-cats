@@ -36,7 +36,7 @@ mutual
       Empty' : 
           {layer : Layer} → {type : “ layer ”} → {⟹ ⟹' : Arrow} → 
           (x : « type ») → 
-          « Empty x ∙ ⟹' ∙ Empty x »
+          « Empty {⟹ = ⟹} x ∙ ⟹' ∙ Empty {⟹ = ⟹} x »
 
       _∷'_ : 
           {layer : Layer} → {type : “ layer ”} → {⟹ ⟹' : Arrow} → 
@@ -44,3 +44,9 @@ mutual
           {f g : « x ∙ ⟹ ∙ y »} → {fs gs : « y ∙ ⟹ * ∙ z »} → 
           « f ∙ ⟹' ∙ g » → « fs ∙ ⟹' ∙ gs » → 
           « (f ∷ fs) ∙ ⟹' ∙ (g ∷ gs) »
+
+      Paste :
+          {layer : Layer} → {type : “ layer ”} → {⟹ : Arrow} → 
+          {x y : « type »} → 
+          « x ∙ ⟹ * ∙ y » → 
+          « x ∙ ⟹ ∙ y »
