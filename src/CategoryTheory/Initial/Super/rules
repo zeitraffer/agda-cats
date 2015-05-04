@@ -1,0 +1,79 @@
+-- rules
+
+{Prop-T} : * = Ob0 Prop-0Cat
+  POb : *
+
+-Prop-> : Prop-T -> Prop-T -> *
+_$_ : (f : X -Prop-> Y) -> X -> Y
+
+CId0-Prop : MId-Prop-App -Prop-> (P -Prop-> P)
+CId-Prop-App : P -Prop-> P = ...
+CMul0-Prop : (P1 -Prop-> P2) `MMul-Prop-App` (P2 -Prop-> P3) -Prop-> (P1 -Prop-> P3)
+CMul0-Prop-App : (P1 -Prop-> P2) -> (P2 -Prop-> P3) -> (P1 -Prop-> P3) = ...
+------------------------
+Prop-0Cat : 0Cat-T = {^}
+
+MId-Prop-App : Prop-T
+MId-Prop : MId-0Cat -0Cat-> Prop-0Cat
+MMul-Prop-App : Prop-T -> Prop-T -> Prop-T
+MMul-Prop : Prop-0Cat `MMul-0Cat` Prop-0Cat -0Cat-> Prop-0Cat
+LeftUnitor-Prop-App : (MId-Prop-App `MMul-Prop-App` P) <-Prop-> P
+RightUnitor-Prop-App : (P `MMul-Prop-App` MId-Prop-App) <-Prop-> P
+--------------------------
+Prop-M0Cat : M0Cat-T = {^}
+
+{0Cat-T} : *
+  Ob0 : 0Cat-T -> *
+  _==_ : 0Cat-T -> 0Cat-T -> PropT
+  Id0 : MonoidId-Prop-Ob -P-> (x == x) 
+  Mul0 : (x == y) MonoidMul (y == z) -> (x == z)
+
+{0Grp-T} : *
+  Inv0 : (x == y) -> (y == x)
+
+-0Cat-> : 0Cat-T -> 0Cat-T -> 0Cat-T
+(X -0Cat-> Y)
+  Ob : *
+  _$_ : Ob X -> Ob Y
+  _$'_ : (x == x') -> ($ x == $ x')
+f == g @ X -0Cat-> Y = (x : Ob X) -> f $ x == f $ y
+
+Id1-0Cat-Ob = Id1-0Cat $ !
+Mul1-0Cat-Ob f g = Mul1-0Cat (f,g)
+Id1-0Cat : MonoidId-0Cat-Ob -0Cat-> (x -0Cat-> x)
+Mul1-0Cat : (x -0Cat-> y) MonoidMul-0Cat-Ob (y -0Cat-> z) -0Cat-> (x -0Cat-> z)
+
+MonoidId-0Cat-Ob : 0Cat-T
+MonoidMul-0Cat-Ob : 0Cat-T -> 0Cat-T -> 0Cat-T
+MonoidMul-0Cat-Mor : 
+  Ob(l -0Cat-> l') -> Ob(r -0Cat-> r') -> 
+  Ob(l MonoidMul-0Cat-Ob r -0Cat-> l' MonoidMul-0Cat-Ob r')
+MonoidMul-0Cat-Equ : ...
+MonoidId-0Cat : Ob(MonoidId-1Cat -1Cat-> 0Cat)
+MonoidMul-0Cat : Ob(... -1Cat-> 0Cat)
+MonoidUnitorLeft-0Cat
+MonoidUnitorRight-0Cat
+MonoidAssociator-0Cat
+MonoidLeftTriangulator-
+MonoidCenterTriangulator-
+MonoidRightTriangulator-
+MonoidBothId-
+
+--TODO closed monoidal cat @ 0-Cat
+
+{1Cat-T} : *
+  Ob1 : 1Cat-T -> *
+  _~>_ : 1Cat-T -> 1Cat-T -> 0Cat-T
+  Id1 : Ob( MonoidId-0Cat-Ob -0Cat-> (x ~> x) )
+  Mul1 : Ob( (x ~> y) MonoidMul-0Cat-Ob (y ~> z) -0Cat-> (x ~> z) )
+  NeutrLeft1 : 
+    (Id1{x} MonoidMul-0Cat-Mor Id1-0Cat-Ob{x~>y}) Mul1-0Cat-Ob Mul1 
+    == MonoidNeutrLeft-0Cat
+    @ MonoidId-0Cat-Ob MonoidMul-0Cat-Ob (x ~> y) -0Cat-> (x ~> y)
+  NeutrRight1 : 
+    (Id1-0Cat-Ob{x~>y} MonoidMul-0Cat-Mor Id1{y}) Mul1-0Cat-Ob Mul1 
+    == MonoidNeutrRight-0Cat
+    @ (x ~> y) MonoidMul-0Cat-Ob MonoidId-0Cat-Ob -0Cat-> (x ~> y)
+  Assoc1 : TODO
+
+0Cat-1Cat : 1Cat-T

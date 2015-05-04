@@ -53,7 +53,7 @@ mutual
     where
 
       -- type of objects of the specified category
-      ⋆ 
+      ☆ 
 
         --------
         : “ Ob ”
@@ -415,7 +415,7 @@ mutual
 
       TerminalOb
         : « ① »
-        → « ⋆ »
+        → « ☆ »
 
       TerminalMor
         : {x y : « ① »}
@@ -440,11 +440,11 @@ mutual
         → « TerminalIso f ∙ ≡ ∙ TerminalIso g »
 
       TerminalUnitMor
-        : (x : « ⋆ »)
+        : (x : « ☆ »)
         → « x ∙ ⇒ ∙ TerminalOb MkOneOb »
 
       TerminalUnitMorNatMEqu
-        : {x y : « ⋆ »}
+        : {x y : « ☆ »}
         → (f : « x ∙ ⇔ ∙ y »)
         → « Square
             f (TerminalMor (IdMor MkOneOb)) 

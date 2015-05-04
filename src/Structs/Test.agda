@@ -113,3 +113,5 @@ instance
 testCT : T
 testCT = value
 
+_∣_ : (X : Set) -> X -> X
+_∣_ X x = x
