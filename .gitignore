@@ -1,4 +1,5 @@
 *.agdai
 *.ibc
 *.o
+*.vim
 log

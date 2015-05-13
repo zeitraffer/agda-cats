@@ -3,7 +3,11 @@
 module CategoryTheory.Classes.0-Category-Module where
 
 open import CategoryTheory.Common-Module
-open import CategoryTheory.Classes.0-Relation-Module
+open import CategoryTheory.Operations.TypeSpan-Module
+open import CategoryTheory.Operations.PathSpan-Module
+open import CategoryTheory.Classes.TypeSpan-Module
+open import CategoryTheory.Instances.Type-TypeEndoSpan-Module
+open import CategoryTheory.Instances.TypeSpan-TypeEndoSpan-Module
 
 --------------------------------------
 -- `0-Category-Class` to be a preorder
@@ -11,55 +15,26 @@ open import CategoryTheory.Classes.0-Relation-Module
 
 record 0-Category-Class 
     {X : Type} 
-    (relX : 0-Relation-Class X) 
-    : Type  
+    (relC : TypeEndoSpan-Class X) 
+    : Type 
   where
     constructor Mk
+    rel = get relC
     field
-      get-cat-0-Id 
-        : {x : X} → (x ⟶ x)
-      get-cat-0-Mul 
-        : {x y z : X} → (x ⟶ y) → (y ⟶ z) → (x ⟶ z)
-open 0-Category-Class public
+      paste : PathSpan rel ⟶ rel
 
--- identity method
-0-Id : 
+⁰id : 
     {X : Type} → 
-    {relX : 0-Relation-Class X} → 
-    ⦃ catX : 0-Category-Class relX ⦄ → 
-    {x : X} → (x ⟶ x)
-0-Id ⦃ catX ⦄ = get-cat-0-Id catX 
+    {{rel : TypeEndoSpan-Class X}} → 
+    {{cat : 0-Category-Class rel}} → 
+    {x : X} → 
+    x ⟶ x
+⁰id {{rel}} {{cat}} = 0-Category-Class.paste cat []
 
--- multiplication method
-_0-Mul_ :
+⁰mul : 
     {X : Type} → 
-    {relX : 0-Relation-Class X} → 
-    ⦃ catX : 0-Category-Class relX ⦄ → 
-    {x y z : X} → (x ⟶ y) → (y ⟶ z) → (x ⟶ z)
-_0-Mul_ ⦃ catX ⦄ = get-cat-0-Mul catX 
-
--- a couple of carriers and operations
-record 0-Category-Record 
-    : Type
-  where
-    constructor Mk
-    field
-      get-cat-rel-rec 
-        : 0-Relation-Record
-
-    -- and helpers
-    get-cat-ob-type : Type
-    get-cat-ob-type = get-rel-ob-type get-cat-rel-rec
-    get-cat-rel-inst : 0-Relation-Class get-cat-ob-type
-    get-cat-rel-inst = get-rel-rel-inst get-cat-rel-rec
-
-    field
-      ⦃ get-cat-cat-inst ⦄
-        : 0-Category-Class get-cat-rel-inst
-
-open 0-Category-Record public
-
-instance
-  0-Category-Record-Ob : Ob-Class 0-Category-Record
-  0-Category-Record-Ob = Mk get-cat-ob-type
-
+    {{rel : TypeEndoSpan-Class X}} → 
+    {{cat : 0-Category-Class rel}} → 
+    {a b c : X} → 
+    b ⟶ c → a ⟶ b → a ⟶ c 
+⁰mul {{rel}} {{cat}} f g = 0-Category-Class.paste cat (f , g , [])

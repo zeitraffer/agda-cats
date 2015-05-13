@@ -115,3 +115,13 @@ testCT = value
 
 _∣_ : (X : Set) -> X -> X
 _∣_ X x = x
+
+-------------------------------------------
+
+record R1 : Set where
+  field ff1 : T
+open R1
+
+record R2 : Set where
+  field ff2 : T
+open R2
