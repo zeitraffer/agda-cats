@@ -17,6 +17,8 @@ record TypeEndoSpan-Class (X : Type) : Type
     field 
       it : TypeSpan-Type X X
 
+
+
 instance  
   TypeEndoSpan-Class-is-Wrap : 
       {X : Type} → 
