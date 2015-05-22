@@ -6,11 +6,9 @@ open import CategoryTheory.Common-Module
 open import CategoryTheory.Classes.0-Relation-Module
 open import CategoryTheory.Instances.Type-0-Relation-Module
 
-data Terminal-Type 
-    : Type
+data Terminal-Type : Type
   where
-    ! 
-      : Terminal-Type
+    ! : Terminal-Type
 
 const-Map : {X Y : Type} → Y → X ⟶ Y
 const-Map y = λ x → y

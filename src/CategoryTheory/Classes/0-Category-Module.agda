@@ -19,22 +19,22 @@ record 0-Category-Class
     : Type 
   where
     constructor Mk
-    rel = get relC
+    rel = unwrap relC
     field
       paste : PathSpan rel ⟶ rel
 
 ⁰id : 
     {X : Type} → 
-    {{rel : TypeEndoSpan-Class X}} → 
+    {rel : TypeEndoSpan-Class X} → 
     {{cat : 0-Category-Class rel}} → 
     {x : X} → 
     x ⟶ x
-⁰id {{rel}} {{cat}} = 0-Category-Class.paste cat []
+⁰id {{cat}} = 0-Category-Class.paste cat []
 
 ⁰mul : 
     {X : Type} → 
-    {{rel : TypeEndoSpan-Class X}} → 
+    {rel : TypeEndoSpan-Class X} → 
     {{cat : 0-Category-Class rel}} → 
     {a b c : X} → 
     b ⟶ c → a ⟶ b → a ⟶ c 
-⁰mul {{rel}} {{cat}} f g = 0-Category-Class.paste cat (f , g , [])
+⁰mul {{cat}} f g = 0-Category-Class.paste cat (f , g , [])

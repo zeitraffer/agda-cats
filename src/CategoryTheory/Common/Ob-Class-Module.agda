@@ -18,8 +18,11 @@ record Ob-Class (X : Type) : Type
       ob : X → Type
 
 Ob-Record : Type
-Ob-Record = ∃ Ob-Class
+Ob-Record = ∃¹ Ob-Class
 
-Ob : ⦃ o-rec : Ob-Record ⦄ → (∃.base o-rec → Type)
-Ob ⦃ o-rec ⦄ = Ob-Class.ob (∃.fiber o-rec)
+Ob : 
+    {X : Type} → 
+    ⦃ o-cl : Ob-Class X ⦄ → 
+    (X → Type)
+Ob ⦃ o-cl ⦄ = Ob-Class.ob o-cl
 

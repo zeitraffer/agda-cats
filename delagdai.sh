@@ -1,5 +1,10 @@
-#!/bin/sh
+#!/bin/bash
 
-find -name '*.agdai' -print
-find -name '*.agdai' -delete
+function delall 
+{
+  find -name "$1" -print
+  find -name "$1" -delete
+}
 
+delall '*.agdai'
+delall log

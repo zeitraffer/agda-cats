@@ -5,7 +5,7 @@ module CategoryTheory.Operations.TypeSpan-Module where
 open import CategoryTheory.Common-Module
 
 -----------------------------
--- `TypeSpan` type-synonym
+-- `TypeMap` type-synonym
 --
 
 TypeMap-Type : (src dst : Type) → Type

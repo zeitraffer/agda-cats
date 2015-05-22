@@ -12,18 +12,18 @@ open import CategoryTheory.Classes.TypeSpan-Module
 
 instance
   Type-is-TypeEndoSpan : TypeEndoSpan-Class Type
-  Type-is-TypeEndoSpan = Mk TypeMap-Type
+  Type-is-TypeEndoSpan = Mk-TypeEndoSpan TypeMap-Type
 
 Type-TypeEndoSpan : TypeEndoSpan-Record
-Type-TypeEndoSpan = Mk Type
+Type-TypeEndoSpan = ℯ¹ Type-is-TypeEndoSpan
 
 -----------------------------
 -- `X ⇸ Y` - spans between types
 --
 
 instance
-  Type-is-TypeEndoSpan' : TypeEndoSpan-Class' Type
-  Type-is-TypeEndoSpan' = Mk TypeSpan-Type
+  Type-is-TypeEndoSpan' : TypeEndoSpan'-Class Type
+  Type-is-TypeEndoSpan' = Mk-TypeEndoSpan' TypeSpan-Type
 
-Type-TypeEndoSpan' : TypeEndoSpan-Record'
-Type-TypeEndoSpan' = Mk Type
+Type-TypeEndoSpan' : TypeEndoSpan'-Record
+Type-TypeEndoSpan' = ℯ¹ Type-is-TypeEndoSpan'

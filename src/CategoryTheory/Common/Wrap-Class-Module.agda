@@ -16,15 +16,21 @@ record Wrap-Class (X WX : Type) : Type
   where
     constructor Mk-Wrap
     field
-      get : WX → X
+      unwrap : WX → X
       wrap : X → WX
 
 Wrap-Record : Type
 Wrap-Record = ∃² Wrap-Class
 
-get : ⦃ w-rec : Wrap-Record ⦄ → (∃².base₂ w-rec → ∃².base₁ w-rec)
-get ⦃ w-rec ⦄ = Wrap-Class.get (∃².fiber w-rec)
+unwrap : 
+  {X WX : Type} → 
+  ⦃ w-cl : Wrap-Class X WX ⦄ → 
+  (WX → X)
+unwrap ⦃ w-cl ⦄ = Wrap-Class.unwrap w-cl
 
-wrap : ⦃ w-rec : Wrap-Record ⦄ → (∃².base₁ w-rec → ∃².base₂ w-rec)
-wrap ⦃ w-rec ⦄ = Wrap-Class.wrap (∃².fiber w-rec)
+wrap : 
+  {X WX : Type} → 
+  ⦃ w-cl : Wrap-Class X WX ⦄ → 
+  (X → WX)
+wrap ⦃ w-cl ⦄ = Wrap-Class.wrap w-cl
 

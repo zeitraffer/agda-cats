@@ -20,6 +20,9 @@ record Carrier-Class (X C : Type) : Type
 Carrier-Record : Type
 Carrier-Record = ∃² Carrier-Class
 
-Carrier : ⦃ c-rec : Carrier-Record ⦄ → (∃².base₁ c-rec → ∃².base₂ c-rec)
-Carrier ⦃ c-rec ⦄ = Carrier-Class.carrier (∃².fiber c-rec)
+Carrier : 
+    {X C : Type} → 
+    ⦃ c-cl : Carrier-Class X C ⦄ → 
+    (X → C)
+Carrier ⦃ c-cl ⦄ = Carrier-Class.carrier c-cl
 

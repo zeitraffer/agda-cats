@@ -13,24 +13,22 @@ open import CategoryTheory.Operations.TypeSpan-Module
 
 record TypeEndoSpan-Class (X : Type) : Type
   where
-    constructor Mk
+    constructor Mk-TypeEndoSpan
     field 
       it : TypeSpan-Type X X
-
-
 
 instance  
   TypeEndoSpan-Class-is-Wrap : 
       {X : Type} → 
       Wrap-Class (TypeSpan-Type X X) (TypeEndoSpan-Class X)
-  TypeEndoSpan-Class-is-Wrap = Mk TypeEndoSpan-Class.it Mk
+  TypeEndoSpan-Class-is-Wrap = Mk-Wrap TypeEndoSpan-Class.it Mk-TypeEndoSpan
 
 -- the only method
 _⟶_ : 
     {X : Type} → 
     ⦃ rel : TypeEndoSpan-Class X ⦄ → 
     TypeSpan-Type X X
-_⟶_ ⦃ rel ⦄ = get rel
+_⟶_ ⦃ rel ⦄ = unwrap rel
 
 -- the only method wrapper
 record _`⟶`_ 
@@ -39,7 +37,7 @@ record _`⟶`_
     (src dst : X) 
     : Type
   where
-    constructor Mk
+    constructor Mk-⟶
     field 
       it : src ⟶ dst
 
@@ -49,36 +47,36 @@ instance
       ⦃ rel : TypeEndoSpan-Class X ⦄ → 
       {src dst : X} → 
       Wrap-Class (src ⟶ dst) (src `⟶` dst)
-  ⟶-is-Wrap = Mk _`⟶`_.it Mk
+  ⟶-is-Wrap = Mk-Wrap _`⟶`_.it Mk-⟶
 
 --------------------------------------------------------------
--- `TypeEndoSpan-Class'` - the minor default relation over carrier
+-- `TypeEndoSpan'-Class` - the minor default relation over carrier
 -- 
 -- `_⇸_` - wrapped relation
 --
 
-record TypeEndoSpan-Class' (X : Type) : Type
+record TypeEndoSpan'-Class (X : Type) : Type
   where
-    constructor Mk
+    constructor Mk-TypeEndoSpan'
     field 
       it : TypeSpan-Type X X
 
 instance  
-  TypeEndoSpan-Class'-is-Wrap : 
+  TypeEndoSpan'-Class-is-Wrap : 
       {X : Type} → 
-      Wrap-Class (TypeSpan-Type X X) (TypeEndoSpan-Class' X)
-  TypeEndoSpan-Class'-is-Wrap = Mk TypeEndoSpan-Class'.it Mk
+      Wrap-Class (TypeSpan-Type X X) (TypeEndoSpan'-Class X)
+  TypeEndoSpan'-Class-is-Wrap = Mk-Wrap TypeEndoSpan'-Class.it Mk-TypeEndoSpan'
 
 -- the only method
 _⇸_ : 
     {X : Type} → 
-    ⦃ rel : TypeEndoSpan-Class' X ⦄ → 
+    ⦃ rel : TypeEndoSpan'-Class X ⦄ → 
     TypeSpan-Type X X
-_⇸_ ⦃ rel ⦄ = get rel
+_⇸_ ⦃ rel ⦄ = unwrap rel
 
 record _`⇸`_ 
     {X : Type} 
-    ⦃ rel : TypeEndoSpan-Class' X ⦄ 
+    ⦃ rel : TypeEndoSpan'-Class X ⦄ 
     (src dst : X) 
     : Type
   where
@@ -89,38 +87,36 @@ record _`⇸`_
 instance
   ⇸-is-Wrap : 
       {X : Type} → 
-      ⦃ rel : TypeEndoSpan-Class' X ⦄ → 
+      ⦃ rel : TypeEndoSpan'-Class X ⦄ → 
       {src dst : X} → 
       Wrap-Class (src ⇸ dst) (src `⇸` dst)
-  ⇸-is-Wrap = Mk _`⇸`_.it Mk
+  ⇸-is-Wrap = Mk-Wrap _`⇸`_.it Mk
 
 -----------------------------------------------------------
 -- `TypeEndoSpan-Record` - a couple of a carrier and a relation
 --
 
-record TypeEndoSpan-Record : Type
-  where
-    constructor Mk
-    field
-      ob-type : Type
-      ⦃ rel-inst ⦄ : TypeEndoSpan-Class ob-type
+TypeEndoSpan-Record : Type
+TypeEndoSpan-Record = ∃¹ TypeEndoSpan-Class
 
 instance
   TypeEndoSpan-Record-is-Ob : Ob-Class TypeEndoSpan-Record
-  TypeEndoSpan-Record-is-Ob = Mk TypeEndoSpan-Record.ob-type
+  TypeEndoSpan-Record-is-Ob = Mk-Ob ∃¹.base
+
+TypeEndoSpan-Record-Ob : Ob-Record
+TypeEndoSpan-Record-Ob = ℯ¹ TypeEndoSpan-Record-is-Ob
 
 -----------------------------------------------------------
 -- `TypeEndoSpan-Record` - a couple of a carrier and a relation
 --
 
-record TypeEndoSpan-Record' : Type
-  where
-    constructor Mk
-    field
-      ob-type : Type
-      ⦃ rel-inst ⦄ : TypeEndoSpan-Class' ob-type
+TypeEndoSpan'-Record : Type
+TypeEndoSpan'-Record = ∃¹ TypeEndoSpan'-Class
 
 instance
-  TypeEndoSpan-Record'-is-Ob : Ob-Class TypeEndoSpan-Record'
-  TypeEndoSpan-Record'-is-Ob = Mk TypeEndoSpan-Record'.ob-type
+  TypeEndoSpan'-Record-is-Ob : Ob-Class TypeEndoSpan'-Record
+  TypeEndoSpan'-Record-is-Ob = Mk-Ob ∃¹.base
+
+TypeEndoSpan'-Record-Ob : Ob-Record
+TypeEndoSpan'-Record-Ob = ℯ¹ TypeEndoSpan'-Record-is-Ob
 

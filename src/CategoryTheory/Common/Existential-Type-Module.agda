@@ -12,12 +12,12 @@ open import CategoryTheory.Common.Type-Type-Module
 -- quantifier of existence (logics)
 --
 
-record ∃ 
+record ∃¹ 
     {Base : Type} 
     (Fiber : Base → Type) 
     : Type 
   where
-    constructor ℯ
+    constructor ℯ¹
     field
       {base} : Base
       fiber : Fiber base
