@@ -5,6 +5,14 @@ module TestRec2 where
 Type : Set
 Type = Set
 
+λ-syntax : {A B : Type} → (A → B) → (A → B)
+λ-syntax f = f
+
+syntax λ-syntax (λ x → B) = 𝝺 x ↦ B
+
+---------------------------
+-- definitions of type-classes
+
 record BaseRec : Type where
   constructor Mk
   field fType : Type
@@ -60,7 +68,7 @@ useSection->Fiber = Fiber
 -- concrete usage
 
 Type:Fiber : FiberRec
-Type:Fiber = Mk Type (λ type → type → Type)
+Type:Fiber = Mk Type (𝝺 type ↦ (type → Type))
 
 data Type-Section (type : Type) : (type → Type) where
   MkTS : {value : type} → Type-Section type value
@@ -73,11 +81,11 @@ data [] : Type where
   ! : []
 
 []:Fiber : FiberRec
-[]:Fiber = Mk [] (λ u → [])
+[]:Fiber = Mk [] (𝝺 u ↦ [])
 
 instance
   []:Section : SectionRec
-  []:Section = Mk []:Fiber (λ u → !)
+  []:Section = Mk []:Fiber (𝝺 u ↦ !)
 
 getFiberT : Type → Type
 getFiberT = Fiber

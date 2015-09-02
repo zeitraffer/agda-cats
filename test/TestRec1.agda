@@ -5,6 +5,14 @@ module TestRec1 where
 Type : Set
 Type = Set
 
+λ-syntax : {A B : Type} → (A → B) → (A → B)
+λ-syntax f = f
+
+syntax λ-syntax (λ x → B) = 𝝺 x ↦ B
+
+---------------------------
+-- definitions of type-classes
+
 record BaseRec : Type where
   constructor Mk
   field fBase : Type
@@ -41,7 +49,7 @@ useFB = Base
 
 instance
   iFiber : FiberRec
-  iFiber = Mk (Mk Type) (λ type → type → Type)
+  iFiber = Mk (Mk Type) (𝝺 type ↦ (type → Type))
 
 getBase : Type
 getBase = Base

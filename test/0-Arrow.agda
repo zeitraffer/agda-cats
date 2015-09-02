@@ -96,8 +96,18 @@ contra-map/Arrow f _⇒_ a b = (f a ⇒ f b)
 
 ---------------------------------------------------------------
 
-Invertible-Type :
+Invertible-Arrow-Type :
     {ob : Type} →
     {{U : Plain-0-Arrow-Record}} →
     (_⇒_ : ob ↠ Ob U) → Type
-Invertible-Type {ob} _⇒_ = (a b : ob) → (a ⇒ b) ⟶ (b ⇒ a)
+Invertible-Arrow-Type {ob} _⇒_ = (a b : ob) → (a ⇒ b) ⟶ (b ⇒ a)
+
+record Plain-0-InvArrow-Record : Type
+  where
+    constructor Mk
+    field arrow : Plain-0-Arrow-Record
+    field inverse : Invertible-Arrow-Type {Ob arrow} _⟶_
+
+instance
+  Plain-0-InvArrow:Ob : Ob-Record
+  Plain-0-InvArrow:Ob = Mk (Rich-0-Arrow-Record.ob {U})
