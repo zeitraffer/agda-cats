@@ -1,6 +1,6 @@
 {-# OPTIONS --type-in-type --copatterns #-}
 
-module Setoid0 where
+module 0-Arrow where
 
 ---------------------------------------------------------------
 
@@ -86,13 +86,13 @@ co-map/Arrow :
     {U₁ U₂ : Type} →  (U₁ → U₂) →
     {ob : Type} →
     ob ↠ U₁ → ob ↠ U₂
-co-map-Arrow f _⇒_ a b = f (a ⇒ b)
+co-map/Arrow f _⇒_ a b = f (a ⇒ b)
 
 contra-map/Arrow :
     {U : Type} →
     {ob₁ ob₂ : Type} → (ob₁ → ob₂) →
     ob₂ ↠ U → ob₁ ↠ U
-contra-map-Arrow f _⇒_ a b = (f a ⇒ f b)
+contra-map/Arrow f _⇒_ a b = (f a ⇒ f b)
 
 ---------------------------------------------------------------
 
@@ -100,4 +100,4 @@ Invertible-Type :
     {ob : Type} →
     {{U : Plain-0-Arrow-Record}} →
     (_⇒_ : ob ↠ Ob U) → Type
-Invertible-Type _⇒_ = (a b : ob) → (a ⇒ b) ⟶ (b ⇒ a)
+Invertible-Type {ob} _⇒_ = (a b : ob) → (a ⇒ b) ⟶ (b ⇒ a)
