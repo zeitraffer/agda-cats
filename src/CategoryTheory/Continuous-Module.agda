@@ -6,17 +6,19 @@ open import CategoryTheory.Common-Module
 
 ---------------------------------------------------------------
 
+-- capability of reducing `List` -> `Monoid`
+
 data P0-Listᵀ (Xᵀ : Typeᵀ) : Typeᵀ
   where
-    [] : P0-Listᵀ Xᵀ
-    _,_ : Xᵀ → P0-Listᵀ Xᵀ → P0-Listᵀ Xᵀ
+    [∙] : P0-Listᵀ Xᵀ
+    _∙_ : Xᵀ → P0-Listᵀ Xᵀ → P0-Listᵀ Xᵀ
 
 List/cata : {Xᵀ Rᵀ : Typeᵀ} → Rᵀ → (Xᵀ → Rᵀ → Rᵀ) → P0-Listᵀ Xᵀ → Rᵀ
 List/cata {Xᵀ} {Rᵀ} nil cons = cata
   where
     cata : P0-Listᵀ Xᵀ → Rᵀ
-    cata [] = nil
-    cata (head , tail) = cons head (cata tail)
+    cata [∙] = nil
+    cata (head ∙ tail) = cons head (cata tail)
 
 P0-Monoidᵀ : Typeᵀ → Typeᵀ
 P0-Monoidᵀ carrierᵀ = P0-Listᵀ carrierᵀ → carrierᵀ
@@ -45,20 +47,20 @@ P0-Concat {{rec}} = P0-Monoidᴿ.apply rec
 
 --------------------------------------------------------------- syntax
 
-infixr 5 _,_
+infixr 5 _∙_
 infix 10 _⟫
 infix 0 ⟪_
 
 -- ⟪a,b,c⟫ to be monoid concatenation, see tests
 
 ⟪⟫ : {{M : P0-Monoidᴿ}} → Carrier M
-⟪⟫ = P0-Concat []
+⟪⟫ = P0-Concat [∙]
 
 ⟪_ : {{M : P0-Monoidᴿ}} → P0-Monoidᵀ (Carrier M)
 ⟪_ = P0-Concat
 
 _⟫ : {{M : P0-Monoidᴿ}} → Carrier M → P0-Listᵀ (Carrier M)
-_⟫ m = m , []
+_⟫ m = m ∙ [∙]
 
 --------------------------------------------------------------- Common-Oper
 
@@ -77,6 +79,11 @@ ob ↠ U = (a b : ob) → U
     ob₂ ↠ U → ob₁ ↠ U
 ↠/contra-map f _⇒_ a b = (f a ⇒ f b)
 
+Arrow/↠ :
+    {ob : Typeᵀ} →
+    (ob ↠ Typeᵀ) ↠ Typeᵀ
+Arrow/↠ {ob} _⇒₁_ _⇒₂_ = (a b : ob) → (a ⇒₁ b) → (a ⇒₂ b)
+
 --------------------------------------------------------------- Classes
 
 -- plain (non-enriched) graph
@@ -84,7 +91,7 @@ ob ↠ U = (a b : ob) → U
 record P0-Graphᴿ : Typeᵀ
   where
     constructor Mk
-    field {obᵀ} : Typeᵀ
+    field obᵀ : Typeᵀ
     field apply : obᵀ ↠ Typeᵀ
 
 instance
@@ -101,20 +108,11 @@ Type/↠ a b = a → b
 
 instance
   Type:P0-Graph : P0-Graphᴿ
-  Type:P0-Graph = Mk Type/↠
-
-Arrow/↠ :
-    {{U : P0-Graphᴿ}} →
-    {ob : Typeᵀ} →
-    (ob ↠ Ob U) ↠ Typeᵀ
-Arrow/↠ {ob} _⇒₁_ _⇒₂_ = (a b : ob) → (a ⇒₁ b) ⟶ (a ⇒₂ b)
+  Type:P0-Graph = Mk _ Type/↠
 
 instance
-  Arrow:P0-Graph :
-      {{U : P0-Graphᴿ}} →
-      {ob : Typeᵀ} →
-      P0-Graphᴿ
-  Arrow:P0-Graph {{U}} {ob} = Mk {ob ↠ Ob U} Arrow/↠
+  Arrow:P0-Graph : {ob : Typeᵀ} → P0-Graphᴿ
+  Arrow:P0-Graph {ob} = Mk (ob ↠ Typeᵀ) Arrow/↠
 
 ---------------------------------------------------------------
 
@@ -123,24 +121,59 @@ instance
 record E0-Graphᴿ (U : P0-Graphᴿ) : Typeᵀ
   where
     constructor Mk
-    field {obᵀ} : Typeᵀ
+    field obᵀ : Typeᵀ
     field apply : obᵀ ↠ Ob U
 
 instance
-  R0-Graph:Ob : {U : P0-Graphᴿ} → Obᴿ Typeᵀ
-  R0-Graph:Ob {U} = Mk _ (E0-Graphᴿ.obᵀ {U})
+  E0-Graph:Ob : {U : P0-Graphᴿ} → Obᴿ Typeᵀ
+  E0-Graph:Ob {U} = Mk _ (E0-Graphᴿ.obᵀ {U})
 
 _⟹_ :
-    {{U : P0-Graphᴿ}} →
+    {U : P0-Graphᴿ} →
     {{rec : E0-Graphᴿ U}} →
     Ob rec ↠ Ob U
-_⟹_ {{U}} {{rec}} = E0-Graphᴿ.apply rec
+_⟹_ {{rec}} = E0-Graphᴿ.apply rec
+
+instance
+  Type:E0-Graph : E0-Graphᴿ Type:P0-Graph
+  Type:E0-Graph = Mk _ Type/↠
+
+Arrow/↠' :
+    {ob : Typeᵀ} →
+    {{U : E0-Graphᴿ Type:P0-Graph}} →
+    (ob ↠ Ob U) ↠ Typeᵀ
+Arrow/↠' {ob} _⇒₁_ _⇒₂_ = (a b : ob) → (a ⇒₁ b) ⟹ (a ⇒₂ b)
+
+instance
+  Arrow:E0-Graph :
+    {ob : Typeᵀ} →
+    {{U : E0-Graphᴿ Type:P0-Graph}} →
+    E0-Graphᴿ Type:P0-Graph
+  Arrow:E0-Graph {ob} {{U}} = Mk (ob ↠ Ob U) Arrow/↠'
 
 ---------------------------------------------------------------
 
-data P0-Path {ob : Typeᵀ} (rel : ob ↠ Typeᵀ) : (a b : ob) → Typeᵀ
-  where
-    0Nil : {a : ob} → P0-Path rel a a
-    0Cons : {a b c : ob} → rel a b → P0-Path rel b c → P0-Path rel a c
+-- capability of reducing `Path` is `Category`
 
---
+module Pathᴹ {ob : Typeᵀ} (_⇒_ : ob ↠ Typeᵀ) where
+  data _⇛_ : ob ↠ Typeᵀ where
+    [∘] : {a : ob} → a ⇛ a
+    _∘_ : {a b c : ob} → a ⇒ b → b ⇛ c → a ⇛ c
+
+P0-Pathᵀ : {ob : Typeᵀ} → ob ↠ Typeᵀ → ob ↠ Typeᵀ
+P0-Pathᵀ _⇒_ = let open Pathᴹ _⇒_ in _⇛_
+
+{-
+List/cata : {Xᵀ Rᵀ : Typeᵀ} → Rᵀ → (Xᵀ → Rᵀ → Rᵀ) → P0-Listᵀ Xᵀ → Rᵀ
+List/cata {Xᵀ} {Rᵀ} nil cons = cata
+  where
+    cata : P0-Listᵀ Xᵀ → Rᵀ
+    cata [] = nil
+    cata (head , tail) = cons head (cata tail)
+-}
+
+P0-Categoryᵀ : {ob : Typeᵀ} → (ob ↠ Typeᵀ) → Typeᵀ
+P0-Categoryᵀ carrier = P0-Pathᵀ carrier ⟶ carrier
+
+P0-Categoryᵀ- : {ob : Typeᵀ} → (ob ↠ Typeᵀ) → Typeᵀ
+P0-Categoryᵀ- carrier = P0-Pathᵀ carrier ⟹ carrier
