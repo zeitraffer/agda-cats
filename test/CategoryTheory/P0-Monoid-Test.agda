@@ -17,15 +17,25 @@ N/cata {Rᵀ} zero succ = cata
     cata 0ᴺ = zero
     cata (n +1ᴺ) = succ (cata n)
 
-1ᴺ : Nᵀ
-1ᴺ = 0ᴺ +1ᴺ
-
 _+ᴺ_ : Nᵀ → Nᵀ → Nᵀ
 _+ᴺ_ n = N/cata n _+1ᴺ
 
+-- additive instance (default)
 instance
-  N:P0-Monoid : P0-Monoidᴿ
-  N:P0-Monoid = Mk Nᵀ (List/cata 0ᴺ _+ᴺ_)
+  N:Monoid:+ : P0-Monoidᴿ
+  N:Monoid:+ = Mk Nᵀ (List/cata 0ᴺ _+ᴺ_)
+
+1ᴺ : Nᵀ
+1ᴺ = 0ᴺ +1ᴺ
+
+_⨯ᴺ_ : Nᵀ → Nᵀ → Nᵀ
+_⨯ᴺ_ n = N/cata 0ᴺ (_+ᴺ_ n)
+
+-- multiplicative instance (non-default)
+N:Monoid:⨯ : P0-Monoidᴿ
+N:Monoid:⨯ = Mk Nᵀ (List/cata 0ᴺ _+ᴺ_)
+
+---------------------------------------------------------------
 
 test-0ᴺ : Nᵀ
 test-0ᴺ = ⟪⟫
@@ -41,17 +51,43 @@ test-3ᴺ = ⟪ test-0ᴺ , test-1ᴺ , test-2ᴺ ⟫
 
 ---------------------------------------------------------------
 
-data ⊤ᵀ : Typeᵀ
+data 0ᵀ : Typeᵀ
   where
-    ! : ⊤ᵀ
+
+data _+ᵀ_ (Lᵀ Rᵀ : Typeᵀ) : Typeᵀ
+  where
+    incl-L : Lᵀ → Lᵀ +ᵀ Rᵀ
+    incl-R : Rᵀ → Lᵀ +ᵀ Rᵀ
+
+record 1ᵀ : Typeᵀ
+  where
+    constructor !
 
 record _⨯ᵀ_ (Lᵀ Rᵀ : Typeᵀ) : Typeᵀ
   where
-    constructor _,_
-    field pr-L : Lᵀ
-    field pr-R : Rᵀ
-open _⨯ᵀ_
+    constructor _::_
+    field proj-L : Lᵀ
+    field proj-R : Rᵀ
 
 instance
-  Type:P0-Monoid : P0-Monoidᴿ
-  Type:P0-Monoid = Mk Typeᵀ (List/cata ⊤ᵀ _⨯ᵀ_)
+  Type:Monoid:+ : P0-Monoidᴿ
+  Type:Monoid:+ = Mk Typeᵀ (List/cata 0ᵀ _+ᵀ_)
+
+Type:Monoid:⨯ : P0-Monoidᴿ
+Type:Monoid:⨯ = Mk Typeᵀ (List/cata 1ᵀ _⨯ᵀ_)
+
+---------------------------------------------------------------
+
+test-0ᵀ : Typeᵀ
+test-0ᵀ = ⟪⟫
+
+test-1ᵀ : Typeᵀ
+test-1ᵀ = ⟪ 1ᵀ ⟫
+
+test-2ᵀ : Typeᵀ
+test-2ᵀ = ⟪ 1ᵀ , 1ᵀ ⟫
+
+test-3ᵀ : Typeᵀ
+test-3ᵀ = ⟪ test-0ᵀ , test-1ᵀ , test-2ᵀ ⟫
+
+---------------------------------------------------------------

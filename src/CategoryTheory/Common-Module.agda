@@ -20,12 +20,10 @@ syntax the A a = a as A
 
 --------------------------------------------------------------- Common-Classes
 
--- `Apply` class (previous)
+-- `Arg` class
 
 Argᵀ : (result arg : Typeᵀ) → Typeᵀ
 Argᵀ result arg = arg → result
-
--- `Arg` class
 
 record Argᴿ (Resultᵀ : Typeᵀ) : Typeᵀ
   where
