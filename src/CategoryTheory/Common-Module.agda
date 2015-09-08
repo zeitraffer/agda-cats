@@ -147,4 +147,35 @@ source ⇸ target = source → target → Typeᵀ
 _-ᵀ→_ : Typeᵀ ↠ Typeᵀ
 a -ᵀ→ b = a → b
 
+--------------------------------------------------------------- Data
+
+data ⊤ᵀ : Typeᵀ where
+  ! : ⊤ᵀ
+
+data _×ᵀ_ (L R : Typeᵀ) : Typeᵀ where
+  _,_ : (l : L) → (r : R) → L ×ᵀ R
+
+infixr 5 _∙_
+data 0-Listᵀ (X : Typeᵀ) : Typeᵀ where
+    [∙] : 0-Listᵀ X
+    _∙_ : X → 0-Listᵀ X → 0-Listᵀ X
+
+module 0-Id {X : Typeᵀ} where
+  data _⇛_ : X ⇸ X where
+    ! : {x : X} → x ⇛ x
+
+module 0-Mul {X Y Z : Typeᵀ} (_⇒₁_ : X ⇸ Y) (_⇒₂_ : Y ⇸ Z) where
+  data _⇛_ : X ⇸ Z where
+    _,_ : {x : X} → {y : Y} → {z : Z} → x ⇒₁ y → y ⇒₂ z → x ⇛ z
+
+module 0-Path {ob : Typeᵀ} (_⇒_ : ob ↠ Typeᵀ) where
+  infixr 5 _∘_
+  data _⇛_ : ob ↠ Typeᵀ where
+    [∘] : {a : ob} → a ⇛ a
+    _∘_ : {a b c : ob} → a ⇒ b → b ⇛ c → a ⇛ c
+
+open 0-Id using (!) renaming (_⇛_ to 0-Idᴬ) public
+open 0-Mul using (_,_) renaming (_⇛_ to 0-Mulᴬ) public
+open 0-Path using ([∘]; _∘_) renaming (_⇛_ to 0-Pathᴬ) public
+
 ---------------------------------------------------------------
