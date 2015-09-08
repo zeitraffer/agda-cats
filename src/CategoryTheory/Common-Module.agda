@@ -137,3 +137,14 @@ instance
   Carrier:Apply {result} = Mk (Carrier:Arg {result}) Carrierᴿ.apply
 
 ---------------------------------------------------------------
+
+_↠_ : Typeᵀ → Typeᵀ → Typeᵀ
+ob ↠ U = ob → ob → U
+
+_⇸_ : Typeᵀ → Typeᵀ → Typeᵀ
+source ⇸ target = source → target → Typeᵀ
+
+_-ᵀ→_ : Typeᵀ ↠ Typeᵀ
+a -ᵀ→ b = a → b
+
+---------------------------------------------------------------
