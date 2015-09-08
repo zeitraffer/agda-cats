@@ -8,31 +8,31 @@ open import CategoryTheory.Common-Module
 
 -- capability of reducing `List` -> `Monoid`
 
-data P0-Listᵀ (Xᵀ : Typeᵀ) : Typeᵀ
+data P0-Listᵀ (X : Typeᵀ) : Typeᵀ
   where
-    [∙] : P0-Listᵀ Xᵀ
-    _∙_ : Xᵀ → P0-Listᵀ Xᵀ → P0-Listᵀ Xᵀ
+    [∙] : P0-Listᵀ X
+    _∙_ : X → P0-Listᵀ X → P0-Listᵀ X
 
-List/cata : {Xᵀ Rᵀ : Typeᵀ} → Rᵀ → (Xᵀ → Rᵀ → Rᵀ) → P0-Listᵀ Xᵀ → Rᵀ
-List/cata {Xᵀ} {Rᵀ} nil cons = cata
+List/cata : {X R : Typeᵀ} → R → (X → R → R) → P0-Listᵀ X → R
+List/cata {X} {R} nil cons = cata
   where
-    cata : P0-Listᵀ Xᵀ → Rᵀ
+    cata : P0-Listᵀ X → R
     cata [∙] = nil
     cata (head ∙ tail) = cons head (cata tail)
 
 P0-Monoidᵀ : Typeᵀ → Typeᵀ
-P0-Monoidᵀ carrierᵀ = P0-Listᵀ carrierᵀ → carrierᵀ
+P0-Monoidᵀ carrier = P0-Listᵀ carrier → carrier
 
 -- plain (non-enriched) 0-dimensional (non-categorified) monoid
 
 record P0-Monoidᴿ : Typeᵀ
   where
     constructor Mk
-    field carrierᵀ : Typeᵀ
-    field apply : P0-Monoidᵀ carrierᵀ
+    field carrier : Typeᵀ
+    field apply : P0-Monoidᵀ carrier
 
 P0-Monoid:Arg : Argᴿ Typeᵀ
-P0-Monoid:Arg = Mk _ P0-Monoidᴿ.carrierᵀ
+P0-Monoid:Arg = Mk _ P0-Monoidᴿ.carrier
 
 instance
   P0-Monoid:Apply : Applyᴿ Typeᵀ P0-Monoidᵀ
@@ -40,7 +40,7 @@ instance
 
 instance
   P0-Monoid:Carrier : Carrierᴿ Typeᵀ
-  P0-Monoid:Carrier = Mk _ P0-Monoidᴿ.carrierᵀ
+  P0-Monoid:Carrier = Mk _ P0-Monoidᴿ.carrier
 
 P0-Concat : {{rec : P0-Monoidᴿ}} → P0-Monoidᵀ (Carrier rec)
 P0-Concat {{rec}} = P0-Monoidᴿ.apply rec
@@ -51,7 +51,7 @@ infixr 5 _∙_
 infix 10 _⟫
 infix 0 ⟪_
 
--- ⟪a,b,c⟫ to be monoid concatenation, see tests
+-- ⟪a∙b∙c⟫ denote monoid concatenation, see tests
 
 ⟪⟫ : {{M : P0-Monoidᴿ}} → Carrier M
 ⟪⟫ = P0-Concat [∙]
@@ -91,13 +91,14 @@ Arrow/↠ {ob} _⇒₁_ _⇒₂_ = (a b : ob) → (a ⇒₁ b) → (a ⇒₂ b)
 record P0-Graphᴿ : Typeᵀ
   where
     constructor Mk
-    field obᵀ : Typeᵀ
-    field apply : obᵀ ↠ Typeᵀ
+    field ob : Typeᵀ
+    field apply : ob ↠ Typeᵀ
 
 instance
   P0-Graph:Ob : Obᴿ Typeᵀ
-  P0-Graph:Ob = Mk _ P0-Graphᴿ.obᵀ
+  P0-Graph:Ob = Mk _ P0-Graphᴿ.ob
 
+-- plain `arrow` operator
 _⟶_ :
     {{rec : P0-Graphᴿ}} →
     Ob rec ↠ Typeᵀ
@@ -121,13 +122,14 @@ instance
 record E0-Graphᴿ (U : P0-Graphᴿ) : Typeᵀ
   where
     constructor Mk
-    field obᵀ : Typeᵀ
-    field apply : obᵀ ↠ Ob U
+    field ob : Typeᵀ
+    field apply : ob ↠ Ob U
 
 instance
   E0-Graph:Ob : {U : P0-Graphᴿ} → Obᴿ Typeᵀ
-  E0-Graph:Ob {U} = Mk _ (E0-Graphᴿ.obᵀ {U})
+  E0-Graph:Ob {U} = Mk _ (E0-Graphᴿ.ob {U})
 
+-- enriched `arrow` operator
 _⟹_ :
     {U : P0-Graphᴿ} →
     {{rec : E0-Graphᴿ U}} →
@@ -139,41 +141,37 @@ instance
   Type:E0-Graph = Mk _ Type/↠
 
 Arrow/↠' :
-    {ob : Typeᵀ} →
     {{U : E0-Graphᴿ Type:P0-Graph}} →
+    {ob : Typeᵀ} →
     (ob ↠ Ob U) ↠ Typeᵀ
 Arrow/↠' {ob} _⇒₁_ _⇒₂_ = (a b : ob) → (a ⇒₁ b) ⟹ (a ⇒₂ b)
 
 instance
   Arrow:E0-Graph :
-    {ob : Typeᵀ} →
     {{U : E0-Graphᴿ Type:P0-Graph}} →
+    {ob : Typeᵀ} →
     E0-Graphᴿ Type:P0-Graph
-  Arrow:E0-Graph {ob} {{U}} = Mk (ob ↠ Ob U) Arrow/↠'
+  Arrow:E0-Graph {{U}} {ob} = Mk (ob ↠ Ob U) Arrow/↠'
 
 ---------------------------------------------------------------
 
 -- capability of reducing `Path` is `Category`
 
-module Pathᴹ {ob : Typeᵀ} (_⇒_ : ob ↠ Typeᵀ) where
+module P0-Pathᴹ {ob : Typeᵀ} (_⇒_ : ob ↠ Typeᵀ) where
   data _⇛_ : ob ↠ Typeᵀ where
     [∘] : {a : ob} → a ⇛ a
     _∘_ : {a b c : ob} → a ⇒ b → b ⇛ c → a ⇛ c
 
-P0-Pathᵀ : {ob : Typeᵀ} → ob ↠ Typeᵀ → ob ↠ Typeᵀ
-P0-Pathᵀ _⇒_ = let open Pathᴹ _⇒_ in _⇛_
+open P0-Pathᴹ renaming (_⇛_ to P0-Pathᵀ) public
 
 {-
-List/cata : {Xᵀ Rᵀ : Typeᵀ} → Rᵀ → (Xᵀ → Rᵀ → Rᵀ) → P0-Listᵀ Xᵀ → Rᵀ
-List/cata {Xᵀ} {Rᵀ} nil cons = cata
+Path/cata : {X R : Typeᵀ} → R → (X → R → R) → P0-Pathᵀ X → R
+Path/cata {X} {R} nil cons = cata
   where
-    cata : P0-Listᵀ Xᵀ → Rᵀ
+    cata : P0-Listᵀ X → R
     cata [] = nil
     cata (head , tail) = cons head (cata tail)
 -}
 
-P0-Categoryᵀ : {ob : Typeᵀ} → (ob ↠ Typeᵀ) → Typeᵀ
+P0-Categoryᵀ : {ob : Typeᵀ} → ob ↠ Typeᵀ → Typeᵀ
 P0-Categoryᵀ carrier = P0-Pathᵀ carrier ⟶ carrier
-
-P0-Categoryᵀ- : {ob : Typeᵀ} → (ob ↠ Typeᵀ) → Typeᵀ
-P0-Categoryᵀ- carrier = P0-Pathᵀ carrier ⟹ carrier

@@ -9,13 +9,13 @@ Typeᵀ : Set
 Typeᵀ = Set
 
 -- synomym for lambda syntax
-λ-syntax : {Aᵀ : Typeᵀ} → {Bᵀ : Aᵀ → Typeᵀ} → ((a : Aᵀ) → Bᵀ a) → ((a : Aᵀ) → Bᵀ a)
+λ-syntax : {A : Typeᵀ} → {B : A → Typeᵀ} → ((a : A) → B a) → ((a : A) → B a)
 λ-syntax f = f
 syntax λ-syntax (λ a → b) = [ a ↦ b ]
 
 -- declare type in subexpression: prefix (the), postfix (as)
-the : (Aᵀ : Typeᵀ) → Aᵀ → Aᵀ
-the Aᵀ a = a
+the : (A : Typeᵀ) → A → A
+the A a = a
 syntax the A a = a as A
 
 --------------------------------------------------------------- Common-Classes
@@ -28,44 +28,43 @@ Argᵀ result arg = arg → result
 record Argᴿ (Resultᵀ : Typeᵀ) : Typeᵀ
   where
     constructor Mk
-    field argᵀ : Typeᵀ
-    field apply : Argᵀ Resultᵀ argᵀ
+    field arg : Typeᵀ
+    field apply : Argᵀ Resultᵀ arg
 
 Arg :
-    {Resultᵀ : Typeᵀ} →
-    {{arg-rec : Argᴿ Resultᵀ}} →
-    Argᵀ Resultᵀ (Argᴿ.argᵀ arg-rec)
-Arg {{arg-rec}} = Argᴿ.apply arg-rec
+    {result : Typeᵀ} →
+    {{A : Argᴿ result}} →
+    Argᵀ result (Argᴿ.arg A)
+Arg {{A}} = Argᴿ.apply A
 
 -- `Apply` class
 
 Applyᵀ :
-    {resultᵀ : Typeᵀ} →
-    (classᵀ : resultᵀ → Typeᵀ) →
-    (Argᴿ resultᵀ) →
-    Typeᵀ
-Applyᵀ classᵀ arg-rec = (arg : Argᴿ.argᵀ arg-rec) → classᵀ (Arg arg)
+    {result : Typeᵀ} →
+    (class : result → Typeᵀ) →
+    Argᴿ result → Typeᵀ
+Applyᵀ class A = (a : Argᴿ.arg A) → class (Arg a)
 
 record Applyᴿ (Resultᵀ : Typeᵀ) (Classᵀ : Resultᵀ → Typeᵀ) : Typeᵀ
   where
     constructor Mk
-    field arg-rec : Argᴿ Resultᵀ
-    field apply : Applyᵀ Classᵀ arg-rec
+    field A : Argᴿ Resultᵀ
+    field apply : Applyᵀ Classᵀ A
 
 Apply :
-    {resultᵀ : Typeᵀ} →
-    {classᵀ : resultᵀ → Typeᵀ} →
-    {{apply-rec : Applyᴿ resultᵀ classᵀ}} →
-    Applyᵀ classᵀ (Applyᴿ.arg-rec apply-rec)
-Apply {{apply-rec}} = Applyᴿ.apply apply-rec
+    {result : Typeᵀ} →
+    {class : result → Typeᵀ} →
+    {{A : Applyᴿ result class}} →
+    Applyᵀ class (Applyᴿ.A A)
+Apply {{A}} = Applyᴿ.apply A
 
 instance
   Apply→Arg :
-    {resultᵀ : Typeᵀ} →
-    {classᵀ : resultᵀ → Typeᵀ} →
-    {{apply-rec : Applyᴿ resultᵀ classᵀ}} →
-    Argᴿ resultᵀ
-  Apply→Arg {{apply-rec}} = Applyᴿ.arg-rec apply-rec
+    {result : Typeᵀ} →
+    {class : result → Typeᵀ} →
+    {{A : Applyᴿ result class}} →
+    Argᴿ result
+  Apply→Arg {{A}} = Applyᴿ.A A
 
 
 -- `Ob` class
@@ -73,68 +72,68 @@ instance
 record Obᴿ (Resultᵀ : Typeᵀ) : Typeᵀ
   where
     constructor Mk
-    field argᵀ : Typeᵀ
-    field apply : Argᵀ Resultᵀ argᵀ
+    field arg : Typeᵀ
+    field apply : Argᵀ Resultᵀ arg
 
 Ob :
-    {resultᵀ : Typeᵀ} →
-    {{ob-rec : Obᴿ resultᵀ}} →
-    Argᵀ resultᵀ (Obᴿ.argᵀ ob-rec)
-Ob {{ob-rec}} = Obᴿ.apply ob-rec
+    {result : Typeᵀ} →
+    {{O : Obᴿ result}} →
+    Argᵀ result (Obᴿ.arg O)
+Ob {{O}} = Obᴿ.apply O
 
 -- `Carrier` class
 
 record Carrierᴿ (Resultᵀ : Typeᵀ) : Typeᵀ
   where
     constructor Mk
-    field argᵀ : Typeᵀ
-    field apply : Argᵀ Resultᵀ argᵀ
+    field arg : Typeᵀ
+    field apply : Argᵀ Resultᵀ arg
 
 Carrier :
-    {resultᵀ : Typeᵀ} →
-    {{carrier-rec : Carrierᴿ resultᵀ}} →
-    Argᵀ resultᵀ (Carrierᴿ.argᵀ carrier-rec)
-Carrier {{carrier-rec}} = Carrierᴿ.apply carrier-rec
+    {result : Typeᵀ} →
+    {{C : Carrierᴿ result}} →
+    Argᵀ result (Carrierᴿ.arg C)
+Carrier {{C}} = Carrierᴿ.apply C
 
 --------------------------------------------------------------- Common-Instances
 
 -- Arg
 
-Arg:Arg : {resultᵀ : Typeᵀ} → Argᴿ Typeᵀ
-Arg:Arg {resultᵀ} = Mk (Argᴿ resultᵀ) Argᴿ.argᵀ
+Arg:Arg : {result : Typeᵀ} → Argᴿ Typeᵀ
+Arg:Arg {result} = Mk (Argᴿ result) Argᴿ.arg
 
 instance
-  Arg:Apply : {Resultᵀ : Typeᵀ} → Applyᴿ Typeᵀ (Argᵀ Resultᵀ)
+  Arg:Apply : {result : Typeᵀ} → Applyᴿ Typeᵀ (Argᵀ result)
   Arg:Apply = Mk Arg:Arg Argᴿ.apply
 
 -- Apply
 
-Apply:Arg : {resultᵀ : Typeᵀ} → {classᵀ : resultᵀ → Typeᵀ} → Argᴿ (Argᴿ resultᵀ)
-Apply:Arg {resultᵀ} {classᵀ} = Mk (Applyᴿ resultᵀ classᵀ) Applyᴿ.arg-rec
+Apply:Arg : {result : Typeᵀ} → {class : result → Typeᵀ} → Argᴿ (Argᴿ result)
+Apply:Arg {result} {class} = Mk (Applyᴿ result class) Applyᴿ.A
 
 instance
   Apply:Apply :
-    {resultᵀ : Typeᵀ} →
-    {classᵀ : resultᵀ → Typeᵀ} →
-    Applyᴿ (Argᴿ resultᵀ) (Applyᵀ classᵀ)
-  Apply:Apply {resultᵀ} {classᵀ} = Mk (Apply:Arg {resultᵀ} {classᵀ}) Applyᴿ.apply
+    {result : Typeᵀ} →
+    {class : result → Typeᵀ} →
+    Applyᴿ (Argᴿ result) (Applyᵀ class)
+  Apply:Apply {result} {class} = Mk (Apply:Arg {result} {class}) Applyᴿ.apply
 
 -- Ob
 
-Ob:Arg : {resultᵀ : Typeᵀ} → Argᴿ Typeᵀ
-Ob:Arg {resultᵀ} = Mk (Obᴿ resultᵀ) Obᴿ.argᵀ
+Ob:Arg : {result : Typeᵀ} → Argᴿ Typeᵀ
+Ob:Arg {result} = Mk (Obᴿ result) Obᴿ.arg
 
 instance
-  Ob:Apply : {resultᵀ : Typeᵀ} → Applyᴿ Typeᵀ (Argᵀ resultᵀ)
-  Ob:Apply {resultᵀ} = Mk (Ob:Arg {resultᵀ}) Obᴿ.apply
+  Ob:Apply : {result : Typeᵀ} → Applyᴿ Typeᵀ (Argᵀ result)
+  Ob:Apply {result} = Mk (Ob:Arg {result}) Obᴿ.apply
 
 -- Carrier
 
-Carrier:Arg : {resultᵀ : Typeᵀ} → Argᴿ Typeᵀ
-Carrier:Arg {resultᵀ} = Mk (Carrierᴿ resultᵀ) Carrierᴿ.argᵀ
+Carrier:Arg : {result : Typeᵀ} → Argᴿ Typeᵀ
+Carrier:Arg {result} = Mk (Carrierᴿ result) Carrierᴿ.arg
 
 instance
-  Carrier:Apply : {resultᵀ : Typeᵀ} → Applyᴿ Typeᵀ (Argᵀ resultᵀ)
-  Carrier:Apply {resultᵀ} = Mk (Carrier:Arg {resultᵀ}) Carrierᴿ.apply
+  Carrier:Apply : {result : Typeᵀ} → Applyᴿ Typeᵀ (Argᵀ result)
+  Carrier:Apply {result} = Mk (Carrier:Arg {result}) Carrierᴿ.apply
 
 ---------------------------------------------------------------
