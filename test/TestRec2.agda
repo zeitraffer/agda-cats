@@ -8,9 +8,10 @@ Typeᵀ : Set
 Typeᵀ = Set
 
 -- synomym for lambda syntax
+infixr -10 λ-syntax
 λ-syntax : {A : Typeᵀ} → {B : A → Typeᵀ} → ((a : A) → B a) → ((a : A) → B a)
 λ-syntax f = f
-syntax λ-syntax (λ a → b) = [ a ↦ b ]
+syntax λ-syntax (λ a → b) = a ↦ b
 
 ---------------------------
 -- definitions of type-classes
@@ -46,7 +47,7 @@ instance
 
 instance
   Section:Base : Baseᴿ
-  Section:Base = Mk Sectionᴿ [ S ↦ Baseᴹ (Sectionᴿ.F S) ]
+  Section:Base = Mk Sectionᴿ (S ↦ Baseᴹ (Sectionᴿ.F S))
 
 Sectionᴹ : ⦃ S : Sectionᴿ ⦄ → (b : Baseᴹ S) → (Fiberᴹ b)
 Sectionᴹ ⦃ S ⦄ = Sectionᴿ.fSection S
@@ -70,24 +71,24 @@ useSection->Fiber = Fiberᴹ
 -- concrete usage
 
 Type:Fiber : Fiberᴿ
-Type:Fiber = Mk Typeᵀ [ type ↦ (type → Typeᵀ) ]
+Type:Fiber = Mk Typeᵀ (type ↦ (type → Typeᵀ))
 
-data Type-Section (type : Typeᵀ) : (type → Typeᵀ) where
-  MkTS : {value : type} → Type-Section type value
+data Type/Section (type : Typeᵀ) : (type → Typeᵀ) where
+  MkTS : {value : type} → Type/Section type value
 
 instance
   Type:Section : Sectionᴿ
-  Type:Section = Mk Type:Fiber Type-Section
+  Type:Section = Mk Type:Fiber Type/Section
 
 data [] : Typeᵀ where
   ! : []
 
 []:Fiber : Fiberᴿ
-[]:Fiber = Mk [] [ u ↦ [] ]
+[]:Fiber = Mk [] (u ↦ [])
 
 instance
   []:Section : Sectionᴿ
-  []:Section = Mk []:Fiber [ u ↦ ! ]
+  []:Section = Mk []:Fiber (u ↦ !)
 
 getFiberT : Typeᵀ → Typeᵀ
 getFiberT = Fiberᴹ
