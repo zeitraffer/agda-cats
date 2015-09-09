@@ -2,99 +2,101 @@
 
 module TestRec2 where
 
-Type : Set
-Type = Set
+---------------------------
+-- synonym for the type of types
+Typeᵀ : Set
+Typeᵀ = Set
 
-λ-syntax : {A B : Type} → (A → B) → (A → B)
+-- synomym for lambda syntax
+λ-syntax : {A : Typeᵀ} → {B : A → Typeᵀ} → ((a : A) → B a) → ((a : A) → B a)
 λ-syntax f = f
-
-syntax λ-syntax (λ x → B) = 𝝺 x ↦ B
+syntax λ-syntax (λ a → b) = [ a ↦ b ]
 
 ---------------------------
 -- definitions of type-classes
 
-record BaseRec : Type where
+record Baseᴿ : Typeᵀ where
   constructor Mk
-  field fType : Type
-  field fBase : fType -> Type
+  field fType : Typeᵀ
+  field fBase : fType -> Typeᵀ
 
-Base : {{base : BaseRec}} -> BaseRec.fType base -> Type
-Base {{base}} = BaseRec.fBase base
+Baseᴹ : ⦃ B : Baseᴿ ⦄ -> Baseᴿ.fType B -> Typeᵀ
+Baseᴹ ⦃ B ⦄ = Baseᴿ.fBase B
 
-record FiberRec : Type where
+record Fiberᴿ : Typeᵀ where
   constructor Mk
-  field fBase : Type
-  field fFiber : fBase → Type
+  field fBase : Typeᵀ
+  field fFiber : fBase → Typeᵀ
 
 instance
-  Fiber:Base : BaseRec
-  Fiber:Base = Mk _ FiberRec.fBase
+  Fiber:Base : Baseᴿ
+  Fiber:Base = Mk _ Fiberᴿ.fBase
 
-Fiber : ⦃ fiber : FiberRec ⦄ → Base fiber → Type
-Fiber ⦃ fiber ⦄ = FiberRec.fFiber fiber
+Fiberᴹ : ⦃ F : Fiberᴿ ⦄ → Baseᴹ F → Typeᵀ
+Fiberᴹ ⦃ F ⦄ = Fiberᴿ.fFiber F
 
-record SectionRec : Type where
+record Sectionᴿ : Typeᵀ where
   constructor Mk
-  field bFiber : FiberRec
-  field fSection : (base : Base bFiber) → Fiber base
+  field F : Fiberᴿ
+  field fSection : (b : Baseᴹ F) → Fiberᴹ b
 
 instance
-  Section->Fiber : {{section : SectionRec}} -> FiberRec
-  Section->Fiber {{section}} = SectionRec.bFiber section
+  Section->Fiber : ⦃ S : Sectionᴿ ⦄ -> Fiberᴿ
+  Section->Fiber ⦃ S ⦄ = Sectionᴿ.F S
 
 instance
-  Section:Base : BaseRec
-  Section:Base = Mk SectionRec (λ section → Base (SectionRec.bFiber section))
+  Section:Base : Baseᴿ
+  Section:Base = Mk Sectionᴿ [ S ↦ Baseᴹ (Sectionᴿ.F S) ]
 
-Section : ⦃ section : SectionRec ⦄ → (base : Base section) → (Fiber base)
-Section ⦃ section ⦄ = SectionRec.fSection section
+Sectionᴹ : ⦃ S : Sectionᴿ ⦄ → (b : Baseᴹ S) → (Fiberᴹ b)
+Sectionᴹ ⦃ S ⦄ = Sectionᴿ.fSection S
 
 ---------------------------
 -- generic usage
 
-useBase : {{base : BaseRec}} -> BaseRec.fType base -> Type
-useBase = Base
+useBase : ⦃ B : Baseᴿ ⦄ -> Baseᴿ.fType B -> Typeᵀ
+useBase = Baseᴹ
 
-useFiber : ⦃ fiber : FiberRec ⦄ → Base fiber → Type
-useFiber = Fiber
+useFiber : ⦃ F : Fiberᴿ ⦄ → Baseᴹ F → Typeᵀ
+useFiber = Fiberᴹ
 
-useSection : ⦃ section : SectionRec ⦄ → (base : Base section) → (Fiber base)
-useSection = Section
+useSection : ⦃ S : Sectionᴿ ⦄ → (b : Baseᴹ S) → (Fiberᴹ b)
+useSection = Sectionᴹ
 
-useSection->Fiber : ⦃ section : SectionRec ⦄ → Base section → Type
-useSection->Fiber = Fiber
+useSection->Fiber : ⦃ S : Sectionᴿ ⦄ → Baseᴹ S → Typeᵀ
+useSection->Fiber = Fiberᴹ
 
 ---------------------------
 -- concrete usage
 
-Type:Fiber : FiberRec
-Type:Fiber = Mk Type (𝝺 type ↦ (type → Type))
+Type:Fiber : Fiberᴿ
+Type:Fiber = Mk Typeᵀ [ type ↦ (type → Typeᵀ) ]
 
-data Type-Section (type : Type) : (type → Type) where
+data Type-Section (type : Typeᵀ) : (type → Typeᵀ) where
   MkTS : {value : type} → Type-Section type value
 
 instance
-  Type:Section : SectionRec
+  Type:Section : Sectionᴿ
   Type:Section = Mk Type:Fiber Type-Section
 
-data [] : Type where
+data [] : Typeᵀ where
   ! : []
 
-[]:Fiber : FiberRec
-[]:Fiber = Mk [] (𝝺 u ↦ [])
+[]:Fiber : Fiberᴿ
+[]:Fiber = Mk [] [ u ↦ [] ]
 
 instance
-  []:Section : SectionRec
-  []:Section = Mk []:Fiber (𝝺 u ↦ !)
+  []:Section : Sectionᴿ
+  []:Section = Mk []:Fiber [ u ↦ ! ]
 
-getFiberT : Type → Type
-getFiberT = Fiber
+getFiberT : Typeᵀ → Typeᵀ
+getFiberT = Fiberᴹ
 
-getSectionT : (base : Type) → Fiber base
-getSectionT = Section
+getSectionT : (b : Typeᵀ) → Fiberᴹ b
+getSectionT = Sectionᴹ
 
-getFiber! : [] → Type
-getFiber! = Fiber
+getFiber! : [] → Typeᵀ
+getFiber! = Fiberᴹ
 
-getSection! : (base : []) → Fiber base
-getSection! = Section
+getSection! : (b : []) → Fiberᴹ b
+getSection! = Sectionᴹ

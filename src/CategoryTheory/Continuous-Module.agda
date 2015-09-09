@@ -13,6 +13,9 @@ List/cata {X} {R} nil cons = cata
     cata [∙] = nil
     cata (head ∙ tail) = cons head (cata tail)
 
+List/unit : {X : Typeᵀ} → X → 0-Listᵀ X
+List/unit x = x ∙ [∙]
+
 ---------------------------------------------------------------
 
 -- capability of reducing `List` -> `Monoid`
@@ -111,10 +114,8 @@ instance
 
 -- plain `arrow` operator
 infix 0 _⟶_
-_⟶_ :
-    {{rec : 0-Graphᴿ}} →
-    Ob rec ↠ Typeᵀ
-_⟶_ {{rec}} = 0-Graphᴿ.apply rec
+_⟶_ : {{G : 0-Graphᴿ}} → 0-Graphᵀ (Ob G)
+_⟶_ {{G}} = Apply G
 
 instance
   Typeᴳ : 0-Graphᴿ
@@ -126,24 +127,25 @@ instance
 
 ---------------------------------------------------------------
 
--- U-enriched graph
+-- U-enriched graph - `E0-Graph` class
+
+E0-Graphᵀ : 0-Graphᴿ → Typeᵀ → Typeᵀ
+E0-Graphᵀ U ob = ob ↠ Ob U
 
 record E0-Graphᴿ (U : 0-Graphᴿ) : Typeᵀ
   where
     constructor Mk
     field ob : Typeᵀ
-    field apply : ob ↠ Ob U
+    field apply : E0-Graphᵀ U ob
 
 instance
   E0-Graph:Ob : {U : 0-Graphᴿ} → Obᴿ Typeᵀ
   E0-Graph:Ob {U} = Mk _ (E0-Graphᴿ.ob {U})
 
 -- enriched `arrow` operator
-_⟹_ :
-    {U : 0-Graphᴿ} →
-    {{rec : E0-Graphᴿ U}} →
-    Ob rec ↠ Ob U
-_⟹_ {{rec}} = E0-Graphᴿ.apply rec
+infix 0 _⟹_
+_⟹_ : {U : 0-Graphᴿ} → {{G : E0-Graphᴿ U}} → E0-Graphᵀ U (Ob G)
+_⟹_ {{G}} = E0-Graphᴿ.apply G
 
 instance
   Typeᴳ' : E0-Graphᴿ Typeᴳ
@@ -224,7 +226,7 @@ infix 4 ⟨_
 ⟨_ : {{C : 0-Categoryᴿ}} → 0-Categoryᵀ (Carrier C)
 ⟨_ = 0-Paste
 
-_⟩ : {{C : 0-Categoryᴿ}} → Carrier C ⟶ 0-Pathᵀ (Carrier C)
+_⟩ : {{C : 0-Categoryᴿ}} → Apply (Carrier C) ⟶ 0-Pathᴬ (Apply (Carrier C))
 _⟩ m = m ∘ [∘]
 
 {-

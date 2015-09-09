@@ -2,57 +2,60 @@
 
 module TestRec1 where
 
-Type : Set
-Type = Set
+---------------------------
 
-λ-syntax : {A B : Type} → (A → B) → (A → B)
+-- synonym for the type of types
+Typeᵀ : Set
+Typeᵀ = Set
+
+-- synomym for lambda syntax
+λ-syntax : {A : Typeᵀ} → {B : A → Typeᵀ} → ((a : A) → B a) → ((a : A) → B a)
 λ-syntax f = f
-
-syntax λ-syntax (λ x → B) = 𝝺 x ↦ B
+syntax λ-syntax (λ a → b) = [ a ↦ b ]
 
 ---------------------------
 -- definitions of type-classes
 
-record BaseRec : Type where
+record Baseᴿ : Typeᵀ where
   constructor Mk
-  field fBase : Type
+  field fBase : Typeᵀ
 
-Base : ⦃ base : BaseRec ⦄ → Type
-Base ⦃ base ⦄ = BaseRec.fBase base
+Baseᴹ : ⦃ B : Baseᴿ ⦄ → Typeᵀ
+Baseᴹ ⦃ B ⦄ = Baseᴿ.fBase B
 
-record FiberRec : Type where
+record Fiberᴿ : Typeᵀ where
   constructor Mk
-  field bBase : BaseRec
-  field fFiber : Base → Type
+  field fBase : Baseᴿ
+  field fFiber : Baseᴹ → Typeᵀ
 
 instance
-  F→B : ⦃ fiber : FiberRec ⦄ → BaseRec
-  F→B ⦃ fiber ⦄ = FiberRec.bBase fiber
+  F→B : ⦃ F : Fiberᴿ ⦄ → Baseᴿ
+  F→B ⦃ F ⦄ = Fiberᴿ.fBase F
 
-Fiber : ⦃ fiber : FiberRec ⦄ → Base → Type
-Fiber ⦃ fiber ⦄ = FiberRec.fFiber fiber
+Fiberᴹ : ⦃ F : Fiberᴿ ⦄ → Baseᴹ → Typeᵀ
+Fiberᴹ ⦃ F ⦄ = Fiberᴿ.fFiber F
 
 ---------------------------
 -- generic usage
 
-useBase : ⦃ base : BaseRec ⦄ → Type
-useBase = Base
+useBase : ⦃ B : Baseᴿ ⦄ → Typeᵀ
+useBase = Baseᴹ
 
-useFiber : ⦃ fiber : FiberRec ⦄ → Base → Type
-useFiber = Fiber
+useFiber : ⦃ F : Fiberᴿ ⦄ → Baseᴹ → Typeᵀ
+useFiber = Fiberᴹ
 
-useFB : ⦃ fiber : FiberRec ⦄ → Type
-useFB = Base
+useFB : ⦃ F : Fiberᴿ ⦄ → Typeᵀ
+useFB = Baseᴹ
 
 ---------------------------
 -- concrete usage
 
 instance
-  iFiber : FiberRec
-  iFiber = Mk (Mk Type) (𝝺 type ↦ (type → Type))
+  iFiber : Fiberᴿ
+  iFiber = Mk (Mk Typeᵀ) [ type ↦ (type → Typeᵀ) ]
 
-getBase : Type
-getBase = Base
+getBase : Typeᵀ
+getBase = Baseᴹ
 
-getFiber : Base → Type
-getFiber = Fiber
+getFiber : Baseᴹ → Typeᵀ
+getFiber = Fiberᴹ

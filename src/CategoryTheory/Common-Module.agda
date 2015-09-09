@@ -16,7 +16,7 @@ syntax λ-syntax (λ a → b) = [ a ↦ b ]
 -- declare type in subexpression: prefix (the), postfix (as)
 the : (A : Typeᵀ) → A → A
 the A a = a
-syntax the A a = a as A
+syntax the A a = a :: A
 
 --------------------------------------------------------------- Common-Classes
 
