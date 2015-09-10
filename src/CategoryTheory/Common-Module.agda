@@ -149,25 +149,26 @@ _−ᵀ→_ : Typeᵀ ↠ Typeᵀ
 a −ᵀ→ b = a → b
 
 -- identity function
-⟨⟩ᵀ : {X : Typeᵀ} → X −ᵀ→ X
-⟨⟩ᵀ = x ↦ x
+ᵀ⟨⟩ : {X : Typeᵀ} → X −ᵀ→ X
+ᵀ⟨⟩ = x ↦ x
 
 -- function composition
-_∘ᵀ_ : {X Y Z : Typeᵀ} → X −ᵀ→ Y → Y −ᵀ→ Z → X −ᵀ→ Z
-f ∘ᵀ g = x ↦ g (f x)
+_ᵀ∘_ : {X Y Z : Typeᵀ} → X −ᵀ→ Y → Y −ᵀ→ Z → X −ᵀ→ Z
+f ᵀ∘ g = x ↦ g (f x)
 
 --------------------------------------------------------------- Data
 
 data ⊤ᵀ : Typeᵀ where
     ! : ⊤ᵀ
 
+infixr 10 _×ᵀ_
 infixr 0 _,_
 data _×ᵀ_ (L R : Typeᵀ) : Typeᵀ where
     _,_ : (l : L) → (r : R) → L ×ᵀ R
 
 infixr 5 _∙_
 data 0-Listᵀ (X : Typeᵀ) : Typeᵀ where
-    [∙] : 0-Listᵀ X
+    [] : 0-Listᵀ X
     _∙_ : X → 0-Listᵀ X → 0-Listᵀ X
 
 module 0-Id {X : Typeᵀ} where
@@ -182,12 +183,20 @@ module 0-Mul {X Y Z : Typeᵀ} (_⇒₁_ : X ⇸ Y) (_⇒₂_ : Y ⇸ Z) where
 module 0-Path {ob : Typeᵀ} (_⇒_ : ob ↠ Typeᵀ) where
   infixr 5 _∘_
   data _⇛_ : ob ↠ Typeᵀ where
-    [∘] : {a : ob} → a ⇛ a
+    [] : {a : ob} → a ⇛ a
     _∘_ : {a b c : ob} → a ⇒ b → b ⇛ c → a ⇛ c
 
-open 0-Id using (!) renaming (_⇛_ to 0-Idᴬ) public
-open 0-Mul using (_,_) renaming (_⇛_ to 0-Mulᴬ) public
-open 0-Path using ([∘]; _∘_) renaming (_⇛_ to 0-Pathᴬ) public
+-- TODO just []
+
+open 0-Id using (!) renaming (_⇛_ to ①ᴬ) public
+open 0-Mul using (_,_) renaming (_⇛_ to _⊗ᴬ_) public
+open 0-Path using ([]; _∘_) renaming (_⇛_ to 0-Pathᴬ) public
+
+-- propositional equality to be the identity relation
+_≡_ : {X : Typeᵀ} → X ↠ Typeᵀ
+_≡_ = ①ᴬ
+
+
 
 --------------------------------------------------------------- Common-Oper
 
@@ -204,8 +213,81 @@ open 0-Path using ([∘]; _∘_) renaming (_⇛_ to 0-Pathᴬ) public
 ↠/contra-map f _⇒_ a b = (f a ⇒ f b)
 
 _−ᴬ→_ : {ob : Typeᵀ} → (ob ↠ Typeᵀ) ↠ Typeᵀ
-_−ᴬ→_ {ob} _⇒₁_ _⇒₂_ = {a b : ob} → (a ⇒₁ b) → (a ⇒₂ b)
+_−ᴬ→_ {ob} _⇒₁_ _⇒₂_ = {a b : ob} → (a ⇒₁ b) −ᵀ→ (a ⇒₂ b)
+
+TypeEndoᵀ : Typeᵀ
+TypeEndoᵀ = Typeᵀ → Typeᵀ
+
+-- plain part of natural transformation
+_−ᴺ→_ : TypeEndoᵀ ↠ Typeᵀ
+F −ᴺ→ G = {x : Typeᵀ} → F x −ᵀ→ G x
+-- TODO use general 0-NatTrans
+
+--------------------------------------------------------------- morphisms
+
+Type/neutral' : Typeᵀ
+Type/neutral' = ⊤ᵀ
+
+Type/compose' : Typeᵀ → Typeᵀ → Typeᵀ
+Type/compose' = _×ᵀ_
+
+Type/0-aryᵀ : TypeEndoᵀ
+Type/0-aryᵀ X = Type/neutral' −ᵀ→ X
+
+Type/0-ary'ᵀ : TypeEndoᵀ
+Type/0-ary'ᵀ X = X
+
+Type/0-ary/wrap : Type/0-ary'ᵀ −ᴺ→ Type/0-aryᵀ
+Type/0-ary/wrap x u = x
+
+Type/0-ary/unwrap : Type/0-aryᵀ −ᴺ→ Type/0-ary'ᵀ
+Type/0-ary/unwrap ξ = ξ !
+
+Type/2-aryᵀ : TypeEndoᵀ
+Type/2-aryᵀ X = Type/compose' X X −ᵀ→ X
+
+Type/2-ary'ᵀ : TypeEndoᵀ
+Type/2-ary'ᵀ X = X → X → X
+
+Type/2-ary/wrap : Type/2-ary'ᵀ −ᴺ→ Type/2-aryᵀ
+Type/2-ary/wrap b p =
+
+Type/2-ary/unwrap : Type/2-aryᵀ −ᴺ→ Type/2-ary'ᵀ
+Type/2-ary/unwrap {X} ξ = ξ !
+
+TypeEndo/neutral' : Type/0-ary'ᵀ TypeEndoᵀ
+TypeEndo/neutral' = X ↦ X
+
+TypeEndo/compose' : Type/2-ary'ᵀ TypeEndoᵀ
+TypeEndo/compose' F G = X ↦ G (F X)
+
+TypeEndo/neutralᵀ : TypeEndoᵀ → Typeᵀ
+TypeEndo/neutralᵀ F = TypeEndo/neutral' −ᴺ→ F
+
+TypeEndo/composeᵀ : TypeEndoᵀ → Typeᵀ
+TypeEndo/composeᵀ F = TypeEndo/compose' F F −ᴺ→ F
 
 ---------------------------------------------------------------
 
--- TODO Arg+apply
+List/cata' : {X R : Typeᵀ} → R → (X → R → R) → 0-Listᵀ X → R
+List/cata' {X} {R} nil cons = cata
+  where
+    cata : 0-Listᵀ X → R
+    cata [] = nil
+    cata (head ∙ tail) = cons head (cata tail)
+
+List/neutral' : {X : Typeᵀ} → Type/0-ary'ᵀ (0-Listᵀ X)
+List/neutral' = []
+
+List/compose' : {X : Typeᵀ} → Type/2-ary'ᵀ (0-Listᵀ X)
+List/compose' = List/cata' ᵀ⟨⟩ (x ↦ f ↦ l ↦ x ∙ f l)
+
+List/return : TypeEndo/neutralᵀ 0-Listᵀ
+List/return x = x ∙ []
+
+List/flatten : TypeEndo/composeᵀ 0-Listᵀ
+List/flatten = List/cata' List/neutral' List/compose'
+
+---------------------------------------------------------------
+-- TODO [,,,] overloaded HList
+-- TODO Wrap class

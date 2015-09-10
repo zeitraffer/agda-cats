@@ -4,27 +4,6 @@ module CategoryTheory.Continuous-Module where
 
 open import CategoryTheory.Common-Module
 
---------------------------------------------------------------- morphisms
-
-List/cata : {X R : Typeᵀ} → R → (X → R → R) → 0-Listᵀ X → R
-List/cata {X} {R} nil cons = cata
-  where
-    cata : 0-Listᵀ X → R
-    cata [∙] = nil
-    cata (head ∙ tail) = cons head (cata tail)
-
-List/neutral : {X : Typeᵀ} → 0-Listᵀ X
-List/neutral = [∙]
-
-List/binop : {X : Typeᵀ} → 0-Listᵀ X → 0-Listᵀ X → 0-Listᵀ X
-List/binop = List/cata ⟨⟩ᵀ (x ↦ f ↦ f ∘ᵀ (_∙_ x))
-
-List/return : {X : Typeᵀ} → X → 0-Listᵀ X
-List/return x = x ∙ [∙]
-
-List/flatten : {X : Typeᵀ} → 0-Listᵀ (0-Listᵀ X) → 0-Listᵀ X
-List/flatten = List/cata List/neutral List/binop
-
 ---------------------------------------------------------------
 
 -- `Monoid` is a capability of reducing `List`
@@ -180,13 +159,27 @@ instance
 
 ---------------------------------------------------------------
 
-Diagᵀ : {ob : Typeᵀ} → 0-Graphᵀ ob → Typeᵀ
-Diagᵀ {ob} _⇒_ = {x : ob} → x ⇒ x
+-- global elements
+Arrow/neutralᵀ : {ob : Typeᵀ} → 0-Graphᵀ ob → Typeᵀ
+Arrow/neutralᵀ {ob} _⇒_ = {a : ob} → a ⇒ a
 
-Path/cata' :
+Arrow/neutral'ᵀ : {ob : Typeᵀ} → 0-Graphᵀ ob → Typeᵀ
+Arrow/neutral'ᵀ {ob} _⇒_ = {a : ob} → a ⇒ a
+
+Arrow/binop'ᵀ : {ob : Typeᵀ} → 0-Graphᵀ ob → Typeᵀ
+Arrow/binop'ᵀ {ob} _⇒_ = {a b c : ob} → a ⇒ b → b ⇒ c → a ⇒ c
+
+Arrow/L-action'ᵀ : {ob : Typeᵀ} → 0-Graphᵀ ob → 0-Graphᵀ ob → Typeᵀ
+Arrow/L-action'ᵀ {ob} _⇒_ _⇛_ = {a b c : ob} → a ⇒ b → b ⇛ c → a ⇛ c
+
+Arrow/R-action'ᵀ : {ob : Typeᵀ} → 0-Graphᵀ ob → 0-Graphᵀ ob → Typeᵀ
+Arrow/R-action'ᵀ {ob} _⇛_ _⇒_ = {a b c : ob} → a ⇛ b → b ⇒ c → a ⇛ c
+
+-- uncurried version
+Path/cata :
     {ob : Typeᵀ} → {X R : 0-Graphᵀ ob} →
     ⟪⟫ ⟶ R → ⟪ X ∙ R ⟫ ⟶ R → 0-Pathᴬ X ⟶ R
-Path/cata' {ob} {X} {R} nil cons = cata
+Path/cata {ob} {X} {R} nil cons = cata
   where
     cata : 0-Pathᴬ X ⟶ R
     cata [∘] = nil !
@@ -228,11 +221,15 @@ instance
   0-Category:Ob = Mk _ 0-Categoryᴿ.ob
 
 instance
+  0-Category:0-Arrow-of : 0-Arrow-ofᴿ
+  0-Category:0-Arrow-of = Mk 0-Category:Ob 0-Categoryᴿ.arrow
+
+instance
   0-Category:Carrier : Carrierᴿ 0-Graphᴿ
   0-Category:Carrier = Mk _ 0-Categoryᴿ.G
 
 0-Paste : {{C : 0-Categoryᴿ}} → 0-Categoryᵀ (Carrier C)
-0-Paste {{C}} = 0-Categoryᴿ.apply C
+0-Paste {{C}} = Apply C
 
 --------------------------------------------------------------- syntax
 
@@ -241,26 +238,19 @@ infix 4 ⟨_
 
 -- ⟨a∘b∘c⟩ denote morphism pasting, see tests
 
-⟨⟩ : {{C : 0-Categoryᴿ}} → Diagᵀ (Apply (Carrier C))
+⟨⟩ : {{C : 0-Categoryᴿ}} → Arrow/neutralᵀ (Arrow-of C)
 ⟨⟩ = 0-Paste [∘]
 
 ⟨_ : {{C : 0-Categoryᴿ}} → 0-Categoryᵀ (Carrier C)
 ⟨_ = 0-Paste
 
-_⟩ : {{C : 0-Categoryᴿ}} → Apply (Carrier C) ⟶ 0-Pathᴬ (Apply (Carrier C))
+_⟩ : {{C : 0-Categoryᴿ}} → Arrow-of C ⟶ 0-Pathᴬ (Arrow-of C)
 _⟩ m = m ∘ [∘]
 
-{- TODO
--- monoid of types wrt cartesian product
-instance
-  Typeᴹ : 0-Monoidᴿ
-  Typeᴹ = Mk Typeᵀ (List/cata ⊤ᵀ _×ᵀ_)
-
--- monoid of relations (arrows) wrt composition
-instance
-  Arrowᴹ : {ob : Typeᵀ} → 0-Monoidᴿ
-  Arrowᴹ {ob} = Mk (ob ↠ Typeᵀ) (List/cata 0-Idᴬ 0-Mulᴬ)
--}
+-- category of types
+-- instance
+--   Type⁰ᶜ : 0-Categoryᴿ
+--   Type⁰ᶜ = Mk Typeᴳ
 
 -- TODO getArrow
 -- TODO get neutral binop return flatten
