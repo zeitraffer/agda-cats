@@ -1,42 +1,9 @@
-{-# OPTIONS --type-in-type --copatterns #-}
+{-# OPTIONS --type-in-type #-}
 
 module CategoryTheory.Common-Module where
 
---------------------------------------------------------------- Common-Oper
-
--- synonym for the type of types
-Typeᵀ : Set
-Typeᵀ = Set
-
--- synomym for lambda syntax
-infixr -100 λ-syntax
-λ-syntax : {A : Typeᵀ} → {B : A → Typeᵀ} → ((a : A) → B a) → ((a : A) → B a)
-λ-syntax f = f
-syntax λ-syntax (λ a → b) = a ↦ b
-
--- declare type in subexpression: prefix (the), postfix (as)
-the : (A : Typeᵀ) → A → A
-the A a = a
-syntax the A a = a :: A
-
 --------------------------------------------------------------- Common-Classes
 
--- `Arg` class
-
-Argᵀ : (result arg : Typeᵀ) → Typeᵀ
-Argᵀ result arg = arg → result
-
-record Argᴿ (Resultᵀ : Typeᵀ) : Typeᵀ
-  where
-    constructor Mk
-    field arg : Typeᵀ
-    field apply : Argᵀ Resultᵀ arg
-
-Arg :
-    {result : Typeᵀ} →
-    {{A : Argᴿ result}} →
-    Argᵀ result (Argᴿ.arg A)
-Arg {{A}} = Argᴿ.apply A
 
 -- `Apply` class
 
@@ -137,39 +104,7 @@ instance
   Carrier:Apply : {result : Typeᵀ} → Applyᴿ _ (Argᵀ result)
   Carrier:Apply {result} = Mk (Carrier:Arg {result}) Carrierᴿ.apply
 
----------------------------------------------------------------
-
-_↠_ : Typeᵀ → Typeᵀ → Typeᵀ
-ob ↠ U = ob → ob → U
-
-_⇸_ : Typeᵀ → Typeᵀ → Typeᵀ
-source ⇸ target = source → target → Typeᵀ
-
-_−ᵀ→_ : Typeᵀ ↠ Typeᵀ
-a −ᵀ→ b = a → b
-
--- identity function
-ᵀ⟨⟩ : {X : Typeᵀ} → X −ᵀ→ X
-ᵀ⟨⟩ = x ↦ x
-
--- function composition
-_ᵀ∘_ : {X Y Z : Typeᵀ} → X −ᵀ→ Y → Y −ᵀ→ Z → X −ᵀ→ Z
-f ᵀ∘ g = x ↦ g (f x)
-
 --------------------------------------------------------------- Data
-
-data ⊤ᵀ : Typeᵀ where
-    ! : ⊤ᵀ
-
-infixr 10 _×ᵀ_
-infixr 0 _,_
-data _×ᵀ_ (L R : Typeᵀ) : Typeᵀ where
-    _,_ : (l : L) → (r : R) → L ×ᵀ R
-
-infixr 5 _∙_
-data 0-Listᵀ (X : Typeᵀ) : Typeᵀ where
-    [] : 0-Listᵀ X
-    _∙_ : X → 0-Listᵀ X → 0-Listᵀ X
 
 module 0-Id {X : Typeᵀ} where
   data _⇛_ : X ⇸ X where
@@ -192,102 +127,5 @@ open 0-Id using (!) renaming (_⇛_ to ①ᴬ) public
 open 0-Mul using (_,_) renaming (_⇛_ to _⊗ᴬ_) public
 open 0-Path using ([]; _∘_) renaming (_⇛_ to 0-Pathᴬ) public
 
--- propositional equality to be the identity relation
-_≡_ : {X : Typeᵀ} → X ↠ Typeᵀ
-_≡_ = ①ᴬ
-
-
-
---------------------------------------------------------------- Common-Oper
-
-↠/co-map :
-    {U₁ U₂ : Typeᵀ} →  (U₁ → U₂) →
-    {ob : Typeᵀ} →
-    ob ↠ U₁ → ob ↠ U₂
-↠/co-map f _⇒_ a b = f (a ⇒ b)
-
-↠/contra-map :
-    {U : Typeᵀ} →
-    {ob₁ ob₂ : Typeᵀ} → (ob₁ → ob₂) →
-    ob₂ ↠ U → ob₁ ↠ U
-↠/contra-map f _⇒_ a b = (f a ⇒ f b)
-
-_−ᴬ→_ : {ob : Typeᵀ} → (ob ↠ Typeᵀ) ↠ Typeᵀ
-_−ᴬ→_ {ob} _⇒₁_ _⇒₂_ = {a b : ob} → (a ⇒₁ b) −ᵀ→ (a ⇒₂ b)
-
-TypeEndoᵀ : Typeᵀ
-TypeEndoᵀ = Typeᵀ → Typeᵀ
-
--- plain part of natural transformation
-_−ᴺ→_ : TypeEndoᵀ ↠ Typeᵀ
-F −ᴺ→ G = {x : Typeᵀ} → F x −ᵀ→ G x
--- TODO use general 0-NatTrans
-
---------------------------------------------------------------- morphisms
-
-Type/neutral' : Typeᵀ
-Type/neutral' = ⊤ᵀ
-
-Type/compose' : Typeᵀ → Typeᵀ → Typeᵀ
-Type/compose' = _×ᵀ_
-
-Type/0-aryᵀ : TypeEndoᵀ
-Type/0-aryᵀ X = Type/neutral' −ᵀ→ X
-
-Type/0-ary'ᵀ : TypeEndoᵀ
-Type/0-ary'ᵀ X = X
-
-Type/0-ary/wrap : Type/0-ary'ᵀ −ᴺ→ Type/0-aryᵀ
-Type/0-ary/wrap x u = x
-
-Type/0-ary/unwrap : Type/0-aryᵀ −ᴺ→ Type/0-ary'ᵀ
-Type/0-ary/unwrap ξ = ξ !
-
-Type/2-aryᵀ : TypeEndoᵀ
-Type/2-aryᵀ X = Type/compose' X X −ᵀ→ X
-
-Type/2-ary'ᵀ : TypeEndoᵀ
-Type/2-ary'ᵀ X = X → X → X
-
-Type/2-ary/wrap : Type/2-ary'ᵀ −ᴺ→ Type/2-aryᵀ
-Type/2-ary/wrap b p =
-
-Type/2-ary/unwrap : Type/2-aryᵀ −ᴺ→ Type/2-ary'ᵀ
-Type/2-ary/unwrap {X} ξ = ξ !
-
-TypeEndo/neutral' : Type/0-ary'ᵀ TypeEndoᵀ
-TypeEndo/neutral' = X ↦ X
-
-TypeEndo/compose' : Type/2-ary'ᵀ TypeEndoᵀ
-TypeEndo/compose' F G = X ↦ G (F X)
-
-TypeEndo/neutralᵀ : TypeEndoᵀ → Typeᵀ
-TypeEndo/neutralᵀ F = TypeEndo/neutral' −ᴺ→ F
-
-TypeEndo/composeᵀ : TypeEndoᵀ → Typeᵀ
-TypeEndo/composeᵀ F = TypeEndo/compose' F F −ᴺ→ F
-
 ---------------------------------------------------------------
-
-List/cata' : {X R : Typeᵀ} → R → (X → R → R) → 0-Listᵀ X → R
-List/cata' {X} {R} nil cons = cata
-  where
-    cata : 0-Listᵀ X → R
-    cata [] = nil
-    cata (head ∙ tail) = cons head (cata tail)
-
-List/neutral' : {X : Typeᵀ} → Type/0-ary'ᵀ (0-Listᵀ X)
-List/neutral' = []
-
-List/compose' : {X : Typeᵀ} → Type/2-ary'ᵀ (0-Listᵀ X)
-List/compose' = List/cata' ᵀ⟨⟩ (x ↦ f ↦ l ↦ x ∙ f l)
-
-List/return : TypeEndo/neutralᵀ 0-Listᵀ
-List/return x = x ∙ []
-
-List/flatten : TypeEndo/composeᵀ 0-Listᵀ
-List/flatten = List/cata' List/neutral' List/compose'
-
----------------------------------------------------------------
--- TODO [,,,] overloaded HList
 -- TODO Wrap class
