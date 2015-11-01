@@ -106,15 +106,6 @@ instance
 
 --------------------------------------------------------------- Data
 
-module 0-Id {X : Typeᵀ} where
-  data _⇛_ : X ⇸ X where
-    ! : {x : X} → x ⇛ x
-
-module 0-Mul {X Y Z : Typeᵀ} (_⇒₁_ : X ⇸ Y) (_⇒₂_ : Y ⇸ Z) where
-  infixr 0 _,_
-  data _⇛_ : X ⇸ Z where
-    _,_ : {x : X} → {y : Y} → {z : Z} → x ⇒₁ y → y ⇒₂ z → x ⇛ z
-
 module 0-Path {ob : Typeᵀ} (_⇒_ : ob ↠ Typeᵀ) where
   infixr 5 _∘_
   data _⇛_ : ob ↠ Typeᵀ where
@@ -123,8 +114,6 @@ module 0-Path {ob : Typeᵀ} (_⇒_ : ob ↠ Typeᵀ) where
 
 -- TODO just []
 
-open 0-Id using (!) renaming (_⇛_ to ①ᴬ) public
-open 0-Mul using (_,_) renaming (_⇛_ to _⊗ᴬ_) public
 open 0-Path using ([]; _∘_) renaming (_⇛_ to 0-Pathᴬ) public
 
 ---------------------------------------------------------------

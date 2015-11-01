@@ -51,11 +51,11 @@ F −ᴱ→ G = {x : Typeᵀ} → F x −ᵀ→ G x
 𝝥 {Base} Fiber = (base : Base) → Fiber base
 
 -- dependent sum
-data 𝝨 {Base : Typeᵀ} : preᵀ (preᵀ Base) where
-  _∷_ : {Fiber : preᵀ Base} →
-      (base : Base) →
-      (fiber : Fiber base) →
-      𝝨 Fiber
+record 𝝨 {Base : Typeᵀ} (Fiber : preᵀ Base) : Typeᵀ
+  where
+    constructor ℯ
+    field base : Base
+    field fiber : Fiber base
 
 -- synomym for dependent lambda syntax
 infixr -100 λ-dep

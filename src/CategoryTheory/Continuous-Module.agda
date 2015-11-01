@@ -1,63 +1,10 @@
-{-# OPTIONS --type-in-type --copatterns #-}
+{-# OPTIONS --type-in-type #-}
 
 module CategoryTheory.Continuous-Module where
 
-open import CategoryTheory.Common-Module
+open import CategoryTheory.Common
 
 ---------------------------------------------------------------
-
--- `Monoid` is a capability of reducing `List`
-
-0-Monoidᵀ : Typeᵀ → Typeᵀ
-0-Monoidᵀ carrier = 0-Listᵀ carrier → carrier
-
--- plain (non-enriched) 0-dimensional (non-categorified) monoid
-
-record 0-Monoidᴿ : Typeᵀ
-  where
-    constructor Mk
-    field carrier : Typeᵀ
-    field apply : 0-Monoidᵀ carrier
-
-0-Monoid:Arg : Argᴿ Typeᵀ
-0-Monoid:Arg = Mk _ 0-Monoidᴿ.carrier
-
-instance
-  0-Monoid:Apply : Applyᴿ Typeᵀ 0-Monoidᵀ
-  0-Monoid:Apply = Mk 0-Monoid:Arg 0-Monoidᴿ.apply
-
-instance
-  0-Monoid:Carrier : Carrierᴿ Typeᵀ
-  0-Monoid:Carrier = Mk _ 0-Monoidᴿ.carrier
-
-0-Concat : {{M : 0-Monoidᴿ}} → 0-Monoidᵀ (Carrier M)
-0-Concat {{M}} = 0-Monoidᴿ.apply M
-
---------------------------------------------------------------- syntax
-
-infix 6 _⟫
-infix 4 ⟪_
-
--- ⟪a∙b∙c⟫ denote monoid concatenation, see tests
-
-⟪⟫ : {{M : 0-Monoidᴿ}} → Carrier M
-⟪⟫ = 0-Concat List/neutral
-
-⟪_ : {{M : 0-Monoidᴿ}} → 0-Monoidᵀ (Carrier M)
-⟪_ = 0-Concat
-
-_⟫ : {{M : 0-Monoidᴿ}} → Carrier M → 0-Listᵀ (Carrier M)
-_⟫ = List/return
-
--- monoid of types wrt cartesian product
-instance
-  Typeᴹ : 0-Monoidᴿ
-  Typeᴹ = Mk Typeᵀ (List/cata ⊤ᵀ _×ᵀ_)
-
--- monoid of relations (arrows) wrt composition
-instance
-  Arrowᴹ : {ob : Typeᵀ} → 0-Monoidᴿ
-  Arrowᴹ {ob} = Mk (ob ↠ Typeᵀ) (List/cata 0-Idᴬ 0-Mulᴬ)
 
 --------------------------------------------------------------- Classes
 
