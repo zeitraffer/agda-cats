@@ -53,7 +53,7 @@ F −ᴱ→ G = {x : Typeᵀ} → F x −ᵀ→ G x
 -- dependent sum
 record 𝝨 {Base : Typeᵀ} (Fiber : preᵀ Base) : Typeᵀ
   where
-    constructor ℯ
+    constructor 𝞂
     field base : Base
     field fiber : Fiber base
 
@@ -72,3 +72,7 @@ syntax λ-mor (λ a → b) = a ⟼ b
 -- declare type in subexpression: "the A a"
 the : 𝝥 endoᵀ
 the A a = a
+
+infix -100 _≡_
+data _≡_ {X : Typeᵀ} : relᵀ X where
+    Refl : {x : X} → x ≡ x

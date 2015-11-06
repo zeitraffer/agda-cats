@@ -16,5 +16,5 @@ open import CategoryTheory.Common
     ob₂ ↠ U → ob₁ ↠ U
 ↠/contra-map f _⇒_ a b = (f a ⇒ f b)
 
-_−ᴬ→_ : {ob : Typeᵀ} → (ob ↠ Typeᵀ) ↠ Typeᵀ
-_−ᴬ→_ {ob} _⇒₁_ _⇒₂_ = {a b : ob} → (a ⇒₁ b) −ᵀ→ (a ⇒₂ b)
+_−ᴬ→_ : {A B : Typeᵀ} → relᵀ (A ⇸ B)
+_−ᴬ→_ {A} {B} _⇒₁_ _⇒₂_ = {a : A} → {b : B} → (a ⇒₁ b) −ᵀ→ (a ⇒₂ b)

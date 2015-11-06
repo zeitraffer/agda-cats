@@ -4,64 +4,8 @@ module CategoryTheory.Continuous-Module where
 
 open import CategoryTheory.Common
 
----------------------------------------------------------------
-
 --------------------------------------------------------------- Classes
 
-0-Graphᵀ : Typeᵀ → Typeᵀ
-0-Graphᵀ ob = ob ↠ Typeᵀ
-
-0-Arrow-ofᵀ : Obᴿ → Typeᵀ
-0-Arrow-ofᵀ O = (r : Arg O) → 0-Graphᵀ (Apply O r)
-
-record 0-Arrow-ofᴿ : Typeᵀ
-  where
-    constructor Mk
-    field O : Obᴿ
-    field apply : 0-Arrow-ofᵀ O
-
-0-Arrow-of:Arg : Argᴿ Obᴿ
-0-Arrow-of:Arg = Mk _ 0-Arrow-ofᴿ.O
-
-instance
-  0-Arrow-of:Apply : Applyᴿ _ 0-Arrow-ofᵀ
-  0-Arrow-of:Apply = Mk 0-Arrow-of:Arg 0-Arrow-ofᴿ.apply
-
-instance
-  0-Arrow-of→Ob : {{A : 0-Arrow-ofᴿ}} → Obᴿ
-  0-Arrow-of→Ob {{A}} = 0-Arrow-ofᴿ.O A
-
-Arrow-of : {{A : 0-Arrow-ofᴿ}} → 0-Arrow-ofᵀ (Arg A)
-Arrow-of {{A}} = Apply A
-
---------------------------------------------------------------- Classes
-
--- plain (non-enriched) graph
-
-record 0-Graphᴿ : Typeᵀ
-  where
-    constructor Mk
-    field ob : Typeᵀ
-    field apply : 0-Graphᵀ ob
-
-0-Graph:Ob : Obᴿ
-0-Graph:Ob = Mk _ 0-Graphᴿ.ob
-
-0-Graph:Arg : Argᴿ Typeᵀ
-0-Graph:Arg = Mk _ 0-Graphᴿ.ob
-
-instance
-  0-Graph:Apply : Applyᴿ _ 0-Graphᵀ
-  0-Graph:Apply = Mk 0-Graph:Arg 0-Graphᴿ.apply
-
-instance
-  0-Graph:0-Arrow-of : 0-Arrow-ofᴿ
-  0-Graph:0-Arrow-of = Mk 0-Graph:Ob 0-Graphᴿ.apply
-
--- plain `arrow` operator
-infix 0 _⟶_
-_⟶_ : {{G : 0-Graphᴿ}} → 0-Graphᵀ (Ob G)
-_⟶_ {{G}} = Apply G
 
 instance
   Typeᴳ : 0-Graphᴿ
