@@ -11,10 +11,14 @@ open import CategoryTheory.Operations-Arrow-Category
 instance
     Type/0-Graph : 0-Graphᴿ Typeᵀ
     0-Graphᴿ.apply Type/0-Graph = _−ᵀ→_
+Typeᴳ : 0-Graphᵀ
+Typeᴳ = Typeᵀ , Type/0-Graph
 
 instance
     Arrow/0-Graph : {ob : Typeᵀ} → 0-Graphᴿ (relᵀ ob)
     0-Graphᴿ.apply Arrow/0-Graph = _−ᴬ→_
+Arrowᴳ : (ob : Typeᵀ) → 0-Graphᵀ
+Arrowᴳ ob = relᵀ ob , Arrow/0-Graph
 
 private
   module Test where

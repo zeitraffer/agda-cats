@@ -5,7 +5,10 @@ module CategoryTheory.Operations-List where
 open import CategoryTheory.Common
 open import CategoryTheory.Operations-Type
 open import CategoryTheory.Operations-Type-Category
+open import CategoryTheory.Operations-Type-Complete
 open import CategoryTheory.Operations-Endo
+open import CategoryTheory.Classes-0-Graph
+open import CategoryTheory.Instances-0-Graph
 
 infixr 5 _∙_
 
@@ -14,7 +17,7 @@ data Listᵀ (X : Typeᵀ) : Typeᵀ where
     [] : Listᵀ X
     _∙_ : X → Listᵀ X → Listᵀ X
 
--- catamorphism
+-- catamorphism (curried)
 List/cata' : {X R : Typeᵀ} → R → (X → R → R) → Listᵀ X → R
 List/cata' {X} {R} nil cons = cata
   where
@@ -22,8 +25,16 @@ List/cata' {X} {R} nil cons = cata
     cata [] = nil
     cata (head ∙ tail) = cons head (cata tail)
 
+-- catamorphism (uncurried)
+List/cata : {X R : Typeᵀ} → ⊤ᵀ ⟶ R → (X ×ᵀ R) ⟶ R → Listᵀ X ⟶ R
+List/cata {X} {R} nil cons = cata
+  where
+    cata : Listᵀ X → R
+    cata [] = nil !
+    cata (head ∙ tail) = cons (head , (cata tail))
+
 -- functor acts on morphisms
-List/map : {A B : Typeᵀ} → (A −ᵀ→ B) → (Listᵀ A −ᵀ→ Listᵀ B)
+List/map : {A B : Typeᵀ} → A ⟶ B → Listᵀ A ⟶ Listᵀ B
 List/map f = List/cata' [] (a ⟼ bs ⟼ f a ∙ bs)
 
 -- monoid neutral element

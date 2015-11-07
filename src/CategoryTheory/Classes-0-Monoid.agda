@@ -38,22 +38,22 @@ instance
 
 --------------------------------------------------------------- syntax
 
-infix 0 ⟪_
-infix 100 _⟫
+infix 0 ⦇_
+infix 100 _⦈
 
 -- ⟪ a ∙ b ∙ c ⟫ denote monoid concatenation, see tests
 
-⟪⟫ : ⦃ 𝕄 : 0-Monoidᵀ ⦄ → Arg 𝕄
-⟪⟫ = 0-Concat List/neutral'
+⦇⦈ : ⦃ 𝕄 : 0-Monoidᵀ ⦄ → Arg 𝕄
+⦇⦈ = 0-Concat List/neutral'
 
-⟪'⟫ : {carrier : Typeᵀ} → ⦃ 𝕄 : 0-Monoidᴿ carrier ⦄ → carrier
-⟪'⟫ = ⟪⟫
+⦇'⦈ : {carrier : Typeᵀ} → ⦃ 𝕄 : 0-Monoidᴿ carrier ⦄ → carrier
+⦇'⦈ = ⦇⦈
 
-⟪_ : ⦃ 𝕄 : 0-Monoidᵀ ⦄ → 0-Monoid-applyᵀ (Arg 𝕄)
-⟪_ = 0-Concat
+⦇_ : ⦃ 𝕄 : 0-Monoidᵀ ⦄ → 0-Monoid-applyᵀ (Arg 𝕄)
+⦇_ = 0-Concat
 
-⟪'_ : {carrier : Typeᵀ} → ⦃ 𝕄 : 0-Monoidᴿ carrier ⦄ → 0-Monoid-applyᵀ carrier
-⟪'_ = ⟪_
+⦇'_ : {carrier : Typeᵀ} → ⦃ 𝕄 : 0-Monoidᴿ carrier ⦄ → 0-Monoid-applyᵀ carrier
+⦇'_ = ⦇_
 
-_⟫ : {carrier : Typeᵀ} → carrier → Listᵀ (carrier)
-_⟫ = List/return
+_⦈ : {carrier : Typeᵀ} → carrier → Listᵀ (carrier)
+_⦈ = List/return

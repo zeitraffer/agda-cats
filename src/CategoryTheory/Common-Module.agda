@@ -106,15 +106,6 @@ instance
 
 --------------------------------------------------------------- Data
 
-module 0-Path {ob : Typeᵀ} (_⇒_ : ob ↠ Typeᵀ) where
-  infixr 5 _∘_
-  data _⇛_ : ob ↠ Typeᵀ where
-    [] : {a : ob} → a ⇛ a
-    _∘_ : {a b c : ob} → a ⇒ b → b ⇛ c → a ⇛ c
-
--- TODO just []
-
-open 0-Path using ([]; _∘_) renaming (_⇛_ to 0-Pathᴬ) public
 
 ---------------------------------------------------------------
 -- TODO Wrap class

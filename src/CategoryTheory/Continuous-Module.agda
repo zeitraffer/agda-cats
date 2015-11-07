@@ -7,14 +7,6 @@ open import CategoryTheory.Common
 --------------------------------------------------------------- Classes
 
 
-instance
-  Typeᴳ : 0-Graphᴿ
-  Typeᴳ = Mk _ _−ᵀ→_
-
-instance
-  Arrowᴳ : {ob : Typeᵀ} → 0-Graphᴿ
-  Arrowᴳ {ob} = Mk (0-Graphᵀ ob) _−ᴬ→_
-
 ---------------------------------------------------------------
 
 -- U-enriched graph - `E0-Graph` class

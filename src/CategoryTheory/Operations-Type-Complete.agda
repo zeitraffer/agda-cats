@@ -5,7 +5,7 @@ module CategoryTheory.Operations-Type-Complete where
 open import CategoryTheory.Common
 
 infixr 8 _×ᵀ_
-infixr 0 _,_
+infixr -999 _,_
 
 -- terminal object in "Type"
 data ⊤ᵀ : Typeᵀ where

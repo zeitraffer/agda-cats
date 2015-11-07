@@ -18,3 +18,6 @@ open import CategoryTheory.Common
 
 _−ᴬ→_ : {A B : Typeᵀ} → relᵀ (A ⇸ B)
 _−ᴬ→_ {A} {B} _⇒₁_ _⇒₂_ = {a : A} → {b : B} → (a ⇒₁ b) −ᵀ→ (a ⇒₂ b)
+
+_−ᴬ⊸_ : {A B C : Typeᵀ} → (B ⇸ C) → (A ⇸ C) → (A ⇸ B)
+_−ᴬ⊸_ {A} {B} {C} _ᵇ⇒ᶜ_ _ᵃ⇒ᶜ_ a b = (c : C) → (b ᵇ⇒ᶜ c) −ᵀ→ (a ᵃ⇒ᶜ c)

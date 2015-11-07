@@ -41,4 +41,4 @@ instance
         {Base : Typeᵀ} → {Fiber : Base → Typeᵀ} →
         {base : Base} → ⦃ 𝔽 : Fiber base ⦄ →
         𝝨 Fiber
-    promoteSigma {base = base} ⦃ 𝔽 ⦄ = 𝞂 base 𝔽
+    promoteSigma ⦃ 𝔽 ⦄ = _ , 𝔽
