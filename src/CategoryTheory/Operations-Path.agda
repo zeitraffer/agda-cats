@@ -8,45 +8,53 @@ open import CategoryTheory.Operations-Type-Category
 open import CategoryTheory.Operations-Endo
 open import CategoryTheory.Operations-Arrow-Category
 open import CategoryTheory.Operations-Arrow-Monoid
+open import CategoryTheory.Operations-Arrow
 open import CategoryTheory.Classes-0-Graph
 open import CategoryTheory.Instances-0-Graph
 
-module Path {ob : Typeᵀ} (_⇒_ : relᵀ ob) where
-  infixr 5 _∘_
-  data _⇛_ : relᵀ ob where
-    [] : {a : ob} → a ⇛ a
-    _∘_ : {a b c : ob} → a ⇒ b → b ⇛ c → a ⇛ c
+infixr 5 _∘_
+data Pathᴬ {ob : Typeᵀ} (A : relᵀ ob) : relᵀ ob where
+    [] : ᴬ0-ary' (Pathᴬ A)
+    _∘_ : ᴬL-act' A (Pathᴬ A)
 
-open Path using ([]; _∘_) renaming (_⇛_ to Pathᴬ) public
-
--- catamorphism
-Path/cata :
+-- catamorphism (uncurried)
+Path/cata' :
     {ob : Typeᵀ} → {X R : relᵀ ob} →
-    ①ᴬ ⟶ R → (X ⊗ᴬ R) ⟶ R → Pathᴬ X ⟶ R
-Path/cata {ob} {X} {R} nil cons = cata
+    ᴬ0-ary' R → ᴬL-act' X R → Pathᴬ X ⟶ R
+Path/cata' {ob} {X} {R} nil cons = cata
   where
     cata : Pathᴬ X ⟶ R
-    cata [] = nil !
-    cata (head ∘ tail) = cons (head , (cata tail))
+    cata [] = nil
+    cata (head ∘ tail) = cons head (cata tail)
+
+-- catamorphism (uncurried)
+Path/cata :
+    {ob : Typeᵀ} → {X R : relᵀ ob} →
+    ᴬ0-ary R → ᴬL-act X R → Pathᴬ X ⟶ R
+Path/cata nil cons = Path/cata' (ᴬ0-unwrap nil) (ᴬL-unwrap cons)
 
 -- functor acts on morphisms
 Path/map :
     {ob : Typeᵀ} → {A B : relᵀ ob} →
     (A ⟶ B) → (Pathᴬ A ⟶ Pathᴬ B)
-Path/map f = Path/cata (! ᴬ⟼ []) (a ⟼ bs ⟼ f a ∙ bs)
+Path/map {ob} {A} {B} f = Path/cata' [] mapp
+  where
+    mapp : ᴬL-act' A (Pathᴬ B)
+    mapp a bs = f a ∘ bs
 
--- monoid neutral element
-List/neutral' : {X : Typeᵀ} → ᵀ0-ary' (Listᵀ X)
-List/neutral' = []
+-- Path/neutral' : {ob : Typeᵀ} → {A : relᵀ ob} → ᴬ0-ary' (Pathᴬ A)
+-- Path/neutral' = []
 
--- monoid composition
-List/compose' : {X : Typeᵀ} → ᵀ2-ary' (Listᵀ X)
-List/compose' = List/cata' ᵀ⟨⟩ (x ⟼ f ⟼ l ⟼ x ∙ f l)
+-- Path/compose' : {ob : Typeᵀ} → {A : relᵀ ob} → ᴬ2-ary' (Pathᴬ A)
+-- Path/compose' {ob} {A} = Path/cata' ᴬ⟨⟩ compp
+--   where
+--     compp : ᴬL-act' A (Pathᴬ A)
+--     compp a f p = a ∘ f p
 
--- monad identity
-List/return : ᴱ0-ary Listᵀ
-List/return x = x ∙ []
-
--- monad multiplication
-List/flatten : ᴱ2-ary Listᵀ
-List/flatten = List/cata' List/neutral' List/compose'
+-- -- monad identity
+-- List/return : ᴱ0-ary Listᵀ
+-- List/return x = x ∙ []
+--
+-- -- monad multiplication
+-- List/flatten : ᴱ2-ary Listᵀ
+-- List/flatten = List/cata' List/neutral' List/compose'

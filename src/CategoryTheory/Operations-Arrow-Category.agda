@@ -4,20 +4,25 @@ module CategoryTheory.Operations-Arrow-Category where
 
 open import CategoryTheory.Common
 
-↠/co-map :
+↠/map² :
     {U₁ U₂ : Typeᵀ} →  (U₁ → U₂) →
     {ob : Typeᵀ} →
     ob ↠ U₁ → ob ↠ U₂
-↠/co-map f _⇒_ a b = f (a ⇒ b)
+↠/map² f _⇒_ a b = f (a ⇒ b)
 
-↠/contra-map :
+↠/map¹ :
     {U : Typeᵀ} →
     {ob₁ ob₂ : Typeᵀ} → (ob₁ → ob₂) →
     ob₂ ↠ U → ob₁ ↠ U
-↠/contra-map f _⇒_ a b = (f a ⇒ f b)
+↠/map¹ f _⇒_ a b = (f a ⇒ f b)
 
-_−ᴬ→_ : {A B : Typeᵀ} → relᵀ (A ⇸ B)
-_−ᴬ→_ {A} {B} _⇒₁_ _⇒₂_ = {a : A} → {b : B} → (a ⇒₁ b) −ᵀ→ (a ⇒₂ b)
+-- identity mapping
+ᴬ⟨⟩ : {ob : Typeᵀ} → {A : relᵀ ob} → A −ᴬ→ A
+ᴬ⟨⟩ = x ⟼ x
 
-_−ᴬ⊸_ : {A B C : Typeᵀ} → (B ⇸ C) → (A ⇸ C) → (A ⇸ B)
-_−ᴬ⊸_ {A} {B} {C} _ᵇ⇒ᶜ_ _ᵃ⇒ᶜ_ a b = (c : C) → (b ᵇ⇒ᶜ c) −ᵀ→ (a ᵃ⇒ᶜ c)
+-- function composition
+infixl 5 _ᴬ∘_
+_ᴬ∘_ :
+    {ob : Typeᵀ} → {X Y Z : relᵀ ob} → 
+    X −ᴬ→ Y → Y −ᴬ→ Z → X −ᴬ→ Z
+f ᴬ∘ g = x ⟼ g (f x)

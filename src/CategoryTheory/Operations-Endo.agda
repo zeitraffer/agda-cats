@@ -19,7 +19,7 @@ open import CategoryTheory.Operations-Endo-Monoid
 ᴱcompose = ᵀ2-wrap ᴱcompose'
 
 ᴱ0-ary : preᵀ Endoᵀ
-ᴱ0-ary A = ᴱ⟪⟫ −ᴱ→ A
+ᴱ0-ary A = ᴱ⟪⟫ −ᴾ→ A
 
 ᴱ2-ary : preᵀ Endoᵀ
-ᴱ2-ary A = (A ᴱ∙ A) −ᴱ→ A
+ᴱ2-ary A = (A ᴱ∙ A) −ᴾ→ A
